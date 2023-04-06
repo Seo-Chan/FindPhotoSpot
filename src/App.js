@@ -1,6 +1,10 @@
 import React from 'react';
 import { createGlobalStyle } from 'styled-components';
 import reset from 'styled-reset';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import Login from './pages/Login/Login';
+import LoginEmail from './pages/LoginEmail/LoginEmail';
+import Join from './pages/Join/Join';
 
 const GlobalStyled = createGlobalStyle`
 ${reset} // 초기화css
@@ -38,6 +42,13 @@ function App() {
   return (
     <>
       <GlobalStyled />
+      <BrowserRouter>
+        <Routes>
+          <Route path='/' element={<Login />} />
+          <Route path='/login/loginEmail' element={<LoginEmail />} />
+          <Route path='/join' element={<Join />} />
+        </Routes>
+      </BrowserRouter>
     </>
   );
 }
