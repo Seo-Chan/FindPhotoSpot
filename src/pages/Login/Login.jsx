@@ -6,7 +6,7 @@ import MessageCircle from '../../assets/icon/message-circle.png';
 import GoogleIcon from '../../assets/icon/google.png';
 
 const Container = styled.main`
-  background-color: #ffe3e1;
+  background-color: var(--pink);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -35,7 +35,7 @@ const BtnContainer = styled.section`
   margin-bottom: 10px;
   // 버튼 공통 스타일
   & > button {
-    background-color: white;
+    background-color: #ffffff;
     display: flex;
     margin-bottom: 10px;
     width: 500px;
@@ -79,7 +79,7 @@ const LoginLink = styled(Link)`
   }
 `;
 
-export default function login() {
+function login() {
   return (
     <Container>
       <h1 className='ir-hidden'>로그인 페이지</h1>
@@ -105,3 +105,5 @@ export default function login() {
     </Container>
   );
 }
+
+export default login;
