@@ -36,6 +36,13 @@ a:visited{
 html{
   font-size: 62.5%;
 }
+
+:root{
+  --vividPink:#FF9494;
+  --pink:#FFD1D1;
+  --lightPink:#FFE3E1;
+  --ivory:#FFF5E4;
+}
 `;
 
 function App() {
