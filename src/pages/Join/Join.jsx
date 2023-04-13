@@ -9,7 +9,7 @@ const Container = styled.main`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 30px 34px;
+  padding: 80px 34px 30px;
   position: absolute;
   top: 0;
   right: 0;
@@ -18,19 +18,19 @@ const Container = styled.main`
 `;
 
 const Title = styled.h1`
-  margin-bottom: 40px;
+  margin-bottom: 30px;
   text-align: center;
   font-size: 2.8rem;
   font-weight: 500;
 `;
 
 const JoinForm = styled.form`
+  width: 450px;
   display: flex;
   flex-direction: column;
   align-items: center;
   position: relative;
-  width: 322px;
-  margin: 50px 0 20px;
+  margin: 30px 0 20px;
 `;
 
 const InputFieldset = styled.fieldset`
@@ -39,6 +39,10 @@ const InputFieldset = styled.fieldset`
   width: 100%;
   gap: 16px;
   margin-bottom: 50px;
+  border: 1px solid var(--pink);
+  padding: 40px;
+  border-radius: 20px;
+  background-color: #ffffff;
 `;
 
 const InputDesc = styled.strong`
@@ -70,7 +74,7 @@ function Join() {
           </div>
           <Input id='intro' labelText='자기소개' placeholder='자기소개를 입력해주세요' />
         </InputFieldset>
-        <Button size='lg' fontColor='black' txt='시작하기' />
+        <Button size='lg' fontColor='black' txt='시작하기' bgColor='light' />
       </JoinForm>
     </Container>
   );
