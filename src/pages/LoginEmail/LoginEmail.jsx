@@ -26,11 +26,11 @@ const Title = styled.h1`
 `;
 
 const LoginForm = styled.form`
+  width: 450px;
   display: flex;
   flex-direction: column;
   align-items: center;
   position: relative;
-  width: 322px;
   margin: 50px 0 20px;
 `;
 
@@ -40,6 +40,10 @@ const InputFieldset = styled.fieldset`
   width: 100%;
   gap: 16px;
   margin-bottom: 50px;
+  border: 1px solid var(--pink);
+  padding: 40px;
+  border-radius: 20px;
+  background-color: #ffffff;
 `;
 
 function LoginEmail() {
@@ -48,10 +52,15 @@ function LoginEmail() {
       <Title>로그인</Title>
       <LoginForm>
         <InputFieldset>
-          <Input id='email' labelText='이메일' />
-          <Input type='password' id='password' labelText='비밀번호' />
+          <Input id='email' labelText='이메일' placeholder='이메일을 입력해주세요' />
+          <Input
+            type='password'
+            id='password'
+            labelText='비밀번호'
+            placeholder='비밀번호를 입력해주세요'
+          />
         </InputFieldset>
-        <Button size='lg' fontColor='black' txt='확인' />
+        <Button size='lg' fontColor='black' txt='확인' bgColor='light' />
       </LoginForm>
       <Link to='/join'>이메일로 회원가입</Link>
     </Container>
