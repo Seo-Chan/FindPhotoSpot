@@ -5,16 +5,25 @@ import UploadImg from '../../assets/images/uploadImg.png';
 import Button from '../../components/common/Button/Button';
 
 const Container = styled.div`
-  background-color: var(--ivory);
+  padding-bottom: 50px;
+`;
+
+const Title = styled.h1`
+  margin-top: 60px;
+  text-align: center;
+  font-size: 2.8rem;
+  font-weight: 500;
 `;
 
 const MainContainer = styled.main`
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin: 30px auto 0;
   padding: 50px;
   font-size: 1.3rem;
   font-weight: 500;
+  border-radius: 30px;
 `;
 
 const Label = styled.p`
@@ -35,7 +44,7 @@ const AddImgContainer = styled.div``;
 const MainImg = styled.img`
   width: 170px;
   border-radius: 5px;
-  border: 1px solid var(--pink);
+  border: 2px solid var(--pink);
   & + & {
     margin-left: 10px;
   }
@@ -102,6 +111,7 @@ function SpotUpdate() {
       <header>
         <NavBar />
       </header>
+      <Title>스팟 등록</Title>
       <MainContainer>
         <SpotImg>
           <MainImgContainer>
