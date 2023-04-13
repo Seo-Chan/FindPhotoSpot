@@ -6,6 +6,8 @@ import Login from './pages/Login/Login';
 import LoginEmail from './pages/LoginEmail/LoginEmail';
 import Join from './pages/Join/Join';
 import Home from './pages/Home/Home';
+import SpotUpdate from './pages/SpotUpdate/SpotUpdate';
+import MyPage from './pages/MyPage/MyPage/MyPage';
 
 const GlobalStyled = createGlobalStyle`
 ${reset} // 초기화css
@@ -56,6 +58,8 @@ function App() {
           <Route path='/login' element={<Login />} />
           <Route path='/login/loginEmail' element={<LoginEmail />} />
           <Route path='/join' element={<Join />} />
+          <Route path='/spot/spotupdate' element={<SpotUpdate />} />
+          <Route path='/mypage' element={<MyPage />} />
         </Routes>
       </BrowserRouter>
     </>
