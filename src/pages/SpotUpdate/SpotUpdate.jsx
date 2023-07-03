@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import NavBar from '../../components/common/NavBar/NavBar';
 import UploadImg from '../../assets/images/uploadImg.png';
@@ -26,8 +26,22 @@ const MainContainer = styled.main`
   border-radius: 30px;
 `;
 
-const Label = styled.p`
+const MainImgDesc = styled.p`
   margin: 5px 0;
+`;
+
+const ImgUpload = styled.input`
+  display: none;
+`;
+
+const UploadImgDiv = styled.div`
+  background-image: url(${(props) => props.image});
+  background-repeat: no-repeat;
+  background-size: contain;
+  width: 170px;
+  height: 200px;
+  border: 2px solid var(--pink);
+  border-radius: 5px;
 `;
 
 const SpotImg = styled.div`
@@ -41,19 +55,16 @@ const MainImgContainer = styled.div``;
 
 const AddImgContainer = styled.div``;
 
-const MainImg = styled.img`
-  width: 170px;
-  border-radius: 5px;
-  border: 2px solid var(--pink);
-  & + & {
-    margin-left: 10px;
-  }
+const ImgLabel = styled.label`
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
 `;
 
 const UpdateForm = styled.form`
   position: relative;
   width: 800px;
-  margin: 20px 0 20px;
+  margin: 20px 0 70px;
 `;
 
 const InputFieldset = styled.fieldset`
@@ -72,7 +83,7 @@ const InputContainer = styled.div`
 
 const InputText = styled.input`
   border: none;
-  border-bottom: 1px solid var(--pink);
+  background-color: var(--lightPink);
   padding: 10px 5px 8px;
   font-family: inherit;
   font-size: 1.4rem;
@@ -80,31 +91,21 @@ const InputText = styled.input`
   font-weight: 400;
 `;
 
-const Desc = styled.p`
-  display: inline-block;
-  font-size: 1.2rem;
-  font-weight: 400;
-  margin: 2px 0;
-`;
-
-const Map = styled.div`
-  width: 800px;
-  height: 350px;
-  margin-bottom: 50px;
-  border-radius: 5px;
-`;
-
-const { kakao } = window;
-
 function SpotUpdate() {
-  useEffect(() => {
-    const container = document.getElementById('map');
-    const options = {
-      center: new kakao.maps.LatLng(36.3515305, 127.3824293),
-      level: 12,
+  const [mainImgFile, setMainImgFile] = useState(UploadImg);
+  const imgRef = useRef();
+
+  const saveImgFile = (e) => {
+    const file = e.target.files[0];
+    console.log(file);
+    const reader = new FileReader();
+    if (file) {
+      reader.readAsDataURL(file);
+    }
+    reader.onloadend = () => {
+      setMainImgFile(reader.result);
     };
-    const map = new kakao.maps.Map(container, options); //eslint-disable-line no-unused-vars
-  }, []);
+  };
 
   return (
     <Container>
@@ -115,14 +116,26 @@ function SpotUpdate() {
       <MainContainer>
         <SpotImg>
           <MainImgContainer>
-            <Label>스팟 대표 사진</Label>
-            <MainImg src={UploadImg} alt='' />
+            <MainImgDesc>스팟 대표 사진</MainImgDesc>
+            <label htmlFor='spotImg'>
+              <UploadImgDiv image={mainImgFile} ref={imgRef}></UploadImgDiv>
+            </label>
+            <ImgUpload type='file' accept='image/*' id='spotImg' onChange={(e) => saveImgFile(e)} />
           </MainImgContainer>
           <AddImgContainer>
-            <Label>추가 사진 (5장 까지 가능)</Label>
-            <MainImg src={UploadImg} alt='' />
-            <MainImg src={UploadImg} alt='' />
-            <MainImg src={UploadImg} alt='' />
+            <MainImgDesc>추가 사진 (3장 까지 가능)</MainImgDesc>
+            <ImgLabel htmlFor='spotImg'>
+              <UploadImgDiv image={mainImgFile}></UploadImgDiv>
+              <UploadImgDiv image={mainImgFile}></UploadImgDiv>
+              <UploadImgDiv image={mainImgFile}></UploadImgDiv>
+            </ImgLabel>
+            <ImgUpload
+              type='file'
+              accept='image/*'
+              id='spotImg'
+              onChange={saveImgFile}
+              ref={imgRef}
+            />
           </AddImgContainer>
         </SpotImg>
         <UpdateForm>
@@ -141,11 +154,6 @@ function SpotUpdate() {
             </InputContainer>
           </InputFieldset>
         </UpdateForm>
-        <div>
-          <Label>스팟의 위치</Label>
-          <Desc>클릭해서 마커를 찍어주세요. 드래그로 위치를 조정할 수 있어요.</Desc>
-          <Map id='map'></Map>
-        </div>
         <Button size='lg' bgColor='light' fontColor='black' txt='등록하기' />
       </MainContainer>
     </Container>
