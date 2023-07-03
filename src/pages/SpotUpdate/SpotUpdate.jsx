@@ -91,6 +91,16 @@ const InputText = styled.input`
   font-weight: 400;
 `;
 
+const TextArea = styled.textarea`
+  border: none;
+  background-color: var(--lightPink);
+  padding: 10px 5px 8px;
+  font-family: inherit;
+  font-size: 1.4rem;
+  outline: none;
+  font-weight: 400;
+`;
+
 function SpotUpdate() {
   const [mainImgFile, setMainImgFile] = useState(UploadImg);
   const [extraImgFile1, setExtraImgFile1] = useState(UploadImg);
@@ -207,7 +217,7 @@ function SpotUpdate() {
             </InputContainer>
             <InputContainer>
               <label htmlFor='spotdesc'>스팟을 소개해주세요!</label>
-              <InputText type='text' />
+              <TextArea cols='10' rows='10' />
             </InputContainer>
           </InputFieldset>
         </UpdateForm>
