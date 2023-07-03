@@ -36,8 +36,8 @@ const ImgUpload = styled.input`
 
 const UploadImgDiv = styled.div`
   background-image: url(${(props) => props.image});
-  background-repeat: no-repeat;
-  background-size: contain;
+  background-size: cover;
+  background-position: center;
   width: 170px;
   height: 200px;
   border: 2px solid var(--pink);
@@ -55,7 +55,7 @@ const MainImgContainer = styled.div``;
 
 const AddImgContainer = styled.div``;
 
-const ImgLabel = styled.label`
+const ExtraImgContainer = styled.div`
   display: flex;
   flex-direction: row;
   gap: 10px;
@@ -93,17 +93,49 @@ const InputText = styled.input`
 
 function SpotUpdate() {
   const [mainImgFile, setMainImgFile] = useState(UploadImg);
+  const [extraImgFile1, setExtraImgFile1] = useState(UploadImg);
+  const [extraImgFile2, setExtraImgFile2] = useState(UploadImg);
+  const [extraImgFile3, setExtraImgFile3] = useState(UploadImg);
   const imgRef = useRef();
 
-  const saveImgFile = (e) => {
+  const saveMainImgFile = (e) => {
     const file = e.target.files[0];
-    console.log(file);
     const reader = new FileReader();
     if (file) {
       reader.readAsDataURL(file);
     }
     reader.onloadend = () => {
       setMainImgFile(reader.result);
+    };
+  };
+  const saveExtraImgFile1 = (e) => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    if (file) {
+      reader.readAsDataURL(file);
+    }
+    reader.onloadend = () => {
+      setExtraImgFile1(reader.result);
+    };
+  };
+  const saveExtraImgFile2 = (e) => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    if (file) {
+      reader.readAsDataURL(file);
+    }
+    reader.onloadend = () => {
+      setExtraImgFile2(reader.result);
+    };
+  };
+  const saveExtraImgFile3 = (e) => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    if (file) {
+      reader.readAsDataURL(file);
+    }
+    reader.onloadend = () => {
+      setExtraImgFile3(reader.result);
     };
   };
 
@@ -117,25 +149,50 @@ function SpotUpdate() {
         <SpotImg>
           <MainImgContainer>
             <MainImgDesc>스팟 대표 사진</MainImgDesc>
-            <label htmlFor='spotImg'>
+            <label htmlFor='mainImg'>
               <UploadImgDiv image={mainImgFile} ref={imgRef}></UploadImgDiv>
             </label>
-            <ImgUpload type='file' accept='image/*' id='spotImg' onChange={(e) => saveImgFile(e)} />
-          </MainImgContainer>
-          <AddImgContainer>
-            <MainImgDesc>추가 사진 (3장 까지 가능)</MainImgDesc>
-            <ImgLabel htmlFor='spotImg'>
-              <UploadImgDiv image={mainImgFile}></UploadImgDiv>
-              <UploadImgDiv image={mainImgFile}></UploadImgDiv>
-              <UploadImgDiv image={mainImgFile}></UploadImgDiv>
-            </ImgLabel>
             <ImgUpload
               type='file'
               accept='image/*'
-              id='spotImg'
-              onChange={saveImgFile}
-              ref={imgRef}
+              id='mainImg'
+              onChange={(e) => saveMainImgFile(e)}
             />
+          </MainImgContainer>
+          <AddImgContainer>
+            <MainImgDesc>추가 사진 (3장 까지 가능)</MainImgDesc>
+            <ExtraImgContainer>
+              <label htmlFor='extraImg1'>
+                <UploadImgDiv image={extraImgFile1}></UploadImgDiv>
+              </label>
+              <ImgUpload
+                type='file'
+                accept='image/*'
+                id='extraImg1'
+                onChange={(e) => saveExtraImgFile1(e)}
+                ref={imgRef}
+              />
+              <label htmlFor='extraImg2'>
+                <UploadImgDiv image={extraImgFile2}></UploadImgDiv>
+              </label>
+              <ImgUpload
+                type='file'
+                accept='image/*'
+                id='extraImg2'
+                onChange={(e) => saveExtraImgFile2(e)}
+                ref={imgRef}
+              />
+              <label htmlFor='extraImg3'>
+                <UploadImgDiv image={extraImgFile3}></UploadImgDiv>
+              </label>
+              <ImgUpload
+                type='file'
+                accept='image/*'
+                id='extraImg3'
+                onChange={(e) => saveExtraImgFile3(e)}
+                ref={imgRef}
+              />
+            </ExtraImgContainer>
           </AddImgContainer>
         </SpotImg>
         <UpdateForm>
