@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import NavBar from '../../../components/common/NavBar/NavBar';
 import UploadProfileImg from '../../../assets/images/uploadProfileImg.png';
@@ -27,14 +27,21 @@ const ProfileContainer = styled.main`
   justify-content: center;
   width: 1000px;
   margin: 30px auto 0;
-  padding: 50px;
+  padding: 40px;
   font-size: 1.3rem;
   font-weight: 500;
-  border-radius: 30px;
 `;
 
-const ProfileImg = styled.img`
+const ImgUpload = styled.input`
+  display: none;
+`;
+
+const UploadImgDiv = styled.div`
+  background-image: url(${(props) => props.image});
+  background-size: cover;
+  background-position: center;
   width: 220px;
+  height: 220px;
   border-radius: 50%;
   border: 2px solid var(--pink);
 `;
@@ -44,18 +51,29 @@ const UserProfile = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 20px;
+  margin-top: 20px;
 `;
 
-const LikeSpotContainer = styled.div`
-  margin: 20px 0;
+const SpotPostContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 `;
 
-const LikeSpot = styled.h3`
+const SpotList = styled.ul`
+  width: 40vw;
+  height: 200px;
+  background-color: var(--lightPink);
+  border-radius: 15px;
+`;
+
+const SpotListContainer = styled.div``;
+
+const SpotPost = styled.h3`
   width: 35vw;
   font-size: 1.5rem;
   font-weight: 600;
   padding: 8px;
-  border-bottom: 1px solid var(--pink);
 `;
 
 const Nickname = styled.p`
@@ -64,6 +82,20 @@ const Nickname = styled.p`
 `;
 
 function MyPage() {
+  const [profileImgFile, setProfileImgFile] = useState(UploadProfileImg);
+  const imgRef = useRef();
+
+  const saveProfileImgFile = (e) => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    if (file) {
+      reader.readAsDataURL(file);
+    }
+    reader.onloadend = () => {
+      setProfileImgFile(reader.result);
+    };
+  };
+
   return (
     <Container>
       <header>
@@ -73,16 +105,30 @@ function MyPage() {
       <ProfileContainer>
         <UserProfile>
           <h2 className='ir-hidden'>나의 프로필</h2>
-          <ProfileImg src={UploadProfileImg} alt='' />
+          <label htmlFor='mainImg'>
+            <UploadImgDiv image={profileImgFile} ref={imgRef}></UploadImgDiv>
+          </label>
+          <ImgUpload
+            type='file'
+            accept='image/*'
+            id='mainImg'
+            onChange={(e) => saveProfileImgFile(e)}
+          />
           <Nickname>[ 닉네임 ]</Nickname>
           <Link to={'/login'}>
             <p>회원정보 수정하기</p>
           </Link>
         </UserProfile>
-        <LikeSpotContainer>
-          <LikeSpot>나의 관심 스팟</LikeSpot>
-          <ul></ul>
-        </LikeSpotContainer>
+        <SpotPostContainer>
+          <SpotListContainer>
+            <SpotPost>좋아요 누른 스팟</SpotPost>
+            <SpotList></SpotList>
+          </SpotListContainer>
+          <SpotListContainer>
+            <SpotPost>추천한 스팟</SpotPost>
+            <SpotList></SpotList>
+          </SpotListContainer>
+        </SpotPostContainer>
       </ProfileContainer>
     </Container>
   );
