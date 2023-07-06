@@ -15,12 +15,13 @@ const InputLabel = styled.label`
 
 const InputText = styled.input`
   border: none;
-  border-bottom: 1px solid var(--pink);
-  padding: 10px 5px 8px;
+  background-color: var(--lightPink);
+  border-radius: 5px;
+  padding: 10px 10px 8px;
   font-family: inherit;
   font-size: 1.4rem;
   &::placeholder {
-    color: #dbdbdb;
+    color: #a4a4a4;
   }
   outline: none;
   font-weight: 400;
