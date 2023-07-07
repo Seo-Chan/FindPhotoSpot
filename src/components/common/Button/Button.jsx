@@ -88,9 +88,16 @@ const Btn = styled.button`
   flex-shrink: 0;
 `;
 
-function Button({ size, fontColor, bgColor, onClick, disabled, txt }) {
+function Button({ size, fontColor, bgColor, onClick, disabled, txt, type }) {
   return (
-    <Btn size={size} fontColor={fontColor} bgColor={bgColor} onClick={onClick} disabled={disabled}>
+    <Btn
+      size={size}
+      fontColor={fontColor}
+      bgColor={bgColor}
+      onClick={onClick}
+      disabled={disabled}
+      type={type}
+    >
       {txt}
     </Btn>
   );
