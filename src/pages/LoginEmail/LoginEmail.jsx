@@ -37,11 +37,10 @@ const LoginForm = styled.form`
 const InputFieldset = styled.fieldset`
   display: flex;
   flex-direction: column;
-  width: 100%;
+  width: 400px;
   gap: 16px;
-  margin-bottom: 50px;
-  border: 1px solid var(--pink);
-  padding: 40px;
+  margin-bottom: 40px;
+  padding: 40px 20px;
   border-radius: 20px;
   background-color: #ffffff;
 `;
