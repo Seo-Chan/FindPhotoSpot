@@ -88,7 +88,7 @@ const Btn = styled.button`
   flex-shrink: 0;
 `;
 
-function Button({ size, fontColor, bgColor, onClick, disabled, txt, type }) {
+function CommonButton({ size, fontColor, bgColor, onClick, disabled, txt, type }) {
   return (
     <Btn
       size={size}
@@ -103,4 +103,4 @@ function Button({ size, fontColor, bgColor, onClick, disabled, txt, type }) {
   );
 }
 
-export default Button;
+export default CommonButton;
