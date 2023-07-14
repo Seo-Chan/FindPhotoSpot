@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Input from '../../components/common/Input/Input';
-import Button from '../../components/common/Button/Button';
+import CommonButton from '../../components/common/Button/CommonButton';
+import { useDispatch } from 'react-redux';
+// import { useNavigate } from 'react-router-dom';
+import { SET_USER } from '../../redux/User';
 // import { firestore } from '../../firebaseConfig';
 
 const Container = styled.main`
@@ -49,6 +52,13 @@ const InputWrapper = styled.div`
   }
 `;
 
+const ValidationWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: end;
+  gap: 10px;
+`;
+
 const ErrorMessage = styled.strong`
   position: absolute;
   color: red;
@@ -64,6 +74,8 @@ const Message = styled.strong`
 `;
 
 function Join() {
+  // const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [joinValue, setJoinValue] = useState({
     email: '',
     password: '',
@@ -154,21 +166,81 @@ function Join() {
     }
   }, [passwordCheck]);
 
+  async function getEmailValidate() {
+    try {
+      //검증 오류 초기화
+      setEmailError('');
+
+      //백엔드 이메일 검증
+      const response = await fetch(
+        'http://49.50.172.178:8080/findPhotoSpot-0.0.1-SNAPSHOT/user/emailvalid',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            user: {
+              email: joinValue.email,
+            },
+          }),
+        },
+      );
+      const test = await response.json();
+      alert(test.message);
+    } catch (error) {
+      console.log('error');
+    }
+  }
+  async function getNicknameValidate() {
+    try {
+      //검증 오류 초기화
+      setEmailError('');
+
+      //백엔드 닉네임 검증
+      const response = await fetch(
+        'http://49.50.172.178:8080/findPhotoSpot-0.0.1-SNAPSHOT/user/emailvalid',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            user: {
+              nickname: joinValue.nickname,
+            },
+          }),
+        },
+      );
+      const test = await response.json();
+      alert(test.message);
+    } catch (error) {
+      console.log('error');
+    }
+  }
   async function submitHandler(e) {
     e.preventDefault();
+    const {
+      email: { value: email },
+      password: { value: password },
+      nickname: { value: nickname },
+      intro: { value: intro },
+    } = e.target;
+    if (!emailError) {
+      //스토어에 유저 정보 저장
+      dispatch(SET_USER({ email, password, nickname, intro }));
 
-    // const data = {
-    //   email: joinValue.email, //'test2@test.com',
-    //   intro: joinValue.intro, //'Seoyeon',
-    //   nickname: joinValue.nickname, //'gongzu',
-    //   password: joinValue.password, //'secret',
-    //   profile: joinValue.profile, //'test2.png'
-    // };
-    //UserList 컬렉션에 User2 란 문서 이름으로 data안의 내용을 insert 한다.
-    // const res = firestore.collection('UserList').doc('User2').set(data);
-
-    // console.log(res);
+      // 다음 페이지로 이동
+      // navigate('/');
+    }
   }
+  // const data = {
+  //   email: joinValue.email, //'test2@test.com',
+  //   intro: joinValue.intro, //'Seoyeon',
+  //   nickname: joinValue.nickname, //'gongzu',
+  //   password: joinValue.password, //'secret',
+  //   profile: joinValue.profile, //'test2.png'
+  // };
+  //UserList 컬렉션에 User2 란 문서 이름으로 data안의 내용을 insert 한다.
+  // const res = firestore.collection('UserList').doc('User2').set(data);
+
+  // console.log(res);
   // SignIn(inputData);
 
   // function SignIn(inputData) {
@@ -192,13 +264,23 @@ function Join() {
       <JoinForm onSubmit={submitHandler}>
         <InputFieldset>
           <InputWrapper>
-            <Input
-              id='email'
-              labelText='이메일'
-              placeholder='이메일을 입력해주세요'
-              onChange={inputChangeHandler}
-              required={true}
-            />
+            <ValidationWrapper>
+              <Input
+                id='email'
+                labelText='이메일'
+                placeholder='이메일을 입력해주세요'
+                onChange={inputChangeHandler}
+                required={true}
+              />
+              <CommonButton
+                size='sm'
+                fontColor='black'
+                txt='확인'
+                bgColor='light'
+                disabled={disable}
+                onClick={getEmailValidate}
+              />
+            </ValidationWrapper>
             <ErrorMessage>{emailError}</ErrorMessage>
           </InputWrapper>
           <InputWrapper>
@@ -226,13 +308,23 @@ function Join() {
             <Message isChecked={isValidatedPasswordCheck}>✔︎ 비밀번호 일치</Message>
           </InputWrapper>
           <InputWrapper>
-            <Input
-              id='nickname'
-              labelText='닉네임'
-              placeholder='닉네임을 입력해주세요'
-              onChange={inputChangeHandler}
-              required={true}
-            />
+            <ValidationWrapper>
+              <Input
+                id='nickname'
+                labelText='닉네임'
+                placeholder='닉네임을 입력해주세요'
+                onChange={inputChangeHandler}
+                required={true}
+              />
+              <CommonButton
+                size='sm'
+                fontColor='black'
+                txt='확인'
+                bgColor='light'
+                disabled={disable}
+                onClick={getNicknameValidate}
+              />
+            </ValidationWrapper>
             <Message isChecked={isValidatedNickname}>✔︎ 2~10자 이내</Message>
           </InputWrapper>
           <InputWrapper>
@@ -245,7 +337,13 @@ function Join() {
             />
           </InputWrapper>
         </InputFieldset>
-        <Button size='lg' fontColor='black' txt='시작하기' bgColor='light' disabled={disable} />
+        <CommonButton
+          size='lg'
+          fontColor='black'
+          txt='시작하기'
+          bgColor='light'
+          disabled={disable}
+        />
       </JoinForm>
     </Container>
   );
