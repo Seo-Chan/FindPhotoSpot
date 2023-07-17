@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import NavBar from '../../components/common/NavBar/NavBar';
 import UploadImg from '../../assets/images/uploadImg.png';
-import Button from '../../components/common/Button/Button';
+import CommonButton from '../../components/common/Button/CommonButton';
 
 const Container = styled.div`
   padding-bottom: 50px;
@@ -20,10 +20,9 @@ const MainContainer = styled.main`
   flex-direction: column;
   align-items: center;
   margin: 30px auto 0;
-  padding: 50px;
+  padding: 40px;
   font-size: 1.3rem;
   font-weight: 500;
-  border-radius: 30px;
 `;
 
 const MainImgDesc = styled.p`
@@ -221,7 +220,7 @@ function SpotUpdate() {
             </InputContainer>
           </InputFieldset>
         </UpdateForm>
-        <Button size='lg' bgColor='light' fontColor='black' txt='등록하기' />
+        <CommonButton size='lg' bgColor='light' fontColor='black' txt='등록하기' />
       </MainContainer>
     </Container>
   );

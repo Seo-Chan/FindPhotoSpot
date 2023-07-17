@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import Input from '../../../components/common/Input/Input';
-import Button from '../../../components/common/Button/Button';
+import CommonButton from '../../../components/common/Button/CommonButton';
 import UploadProfileImg from '../../../assets/images/uploadProfileImg.png';
 
 const Container = styled.main`
@@ -124,7 +124,7 @@ function EditProfile() {
             />
           </InputWrapper>
         </InputFieldset>
-        <Button size='lg' fontColor='black' txt='등록하기' bgColor='light' />
+        <CommonButton size='lg' fontColor='black' txt='등록하기' bgColor='light' />
       </JoinForm>
     </Container>
   );
