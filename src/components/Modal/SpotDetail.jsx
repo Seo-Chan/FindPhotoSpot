@@ -4,11 +4,16 @@ import UploadImg from '../../assets/images/uploadImg.png';
 import CommonButton from '../common/Button/CommonButton';
 
 const Container = styled.section`
-  width: 800px;
-  background-color: green;
+  width: 700px;
+  background-color: #ffffff;
   display: flex;
   gap: 50px;
   padding: 40px;
+  position: relative;
+  z-index: 2;
+  margin: 20vh auto;
+  border-radius: 15px;
+  border: 2px solid var(--vividPink);
 `;
 
 const ImgContainer = styled.div`
