@@ -5,7 +5,6 @@ import CommonButton from '../../components/common/Button/CommonButton';
 import { useDispatch } from 'react-redux';
 // import { useNavigate } from 'react-router-dom';
 import { SET_USER } from '../../redux/User';
-// import { firestore } from '../../firebaseConfig';
 
 const Container = styled.main`
   background-color: var(--ivory);
@@ -197,7 +196,7 @@ function Join() {
 
       //백엔드 닉네임 검증
       const response = await fetch(
-        'http://49.50.172.178:8080/findPhotoSpot-0.0.1-SNAPSHOT/user/emailvalid',
+        'http://49.50.172.178:8080/findPhotoSpot-0.0.1-SNAPSHOT/user/nicknamevalid',
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -225,39 +224,34 @@ function Join() {
     if (!emailError) {
       //스토어에 유저 정보 저장
       dispatch(SET_USER({ email, password, nickname, intro }));
-
+      try {
+        //백엔드 이메일 검증
+        const response = await fetch(
+          'http://49.50.172.178:8080/findPhotoSpot-0.0.1-SNAPSHOT/user',
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              user: {
+                email: email,
+                password: password,
+                nickname: nickname,
+                intro: intro,
+                profile_img: '',
+              },
+            }),
+          },
+        );
+        const test = await response.json();
+        alert(test.message);
+      } catch (error) {
+        console.log('error');
+      }
       // 다음 페이지로 이동
       // navigate('/');
     }
   }
-  // const data = {
-  //   email: joinValue.email, //'test2@test.com',
-  //   intro: joinValue.intro, //'Seoyeon',
-  //   nickname: joinValue.nickname, //'gongzu',
-  //   password: joinValue.password, //'secret',
-  //   profile: joinValue.profile, //'test2.png'
-  // };
-  //UserList 컬렉션에 User2 란 문서 이름으로 data안의 내용을 insert 한다.
-  // const res = firestore.collection('UserList').doc('User2').set(data);
 
-  // console.log(res);
-  // SignIn(inputData);
-
-  // function SignIn(inputData) {
-  //   console.log(inputData.user);
-  //   //INSERT
-  //   const data = {
-  //     email: inputData.user, //'test2@test.com',
-  //     intro: inputData.user.intro, //'Seoyeon',
-  //     nickname: inputData.user.nickname, //'gongzu',
-  //     password: inputData.user.password, //'secret',
-  //     profile: 'test2.png',
-  //   };
-  //   //UserList 컬렉션에 User2 란 문서 이름으로 data안의 내용을 insert 한다.
-  //   const res = firestore.collection('UserList').doc('User2').set(data);
-
-  //   console.log(res);
-  // }
   return (
     <Container>
       <Title>회원가입</Title>
@@ -279,6 +273,7 @@ function Join() {
                 bgColor='light'
                 disabled={disable}
                 onClick={getEmailValidate}
+                type='button'
               />
             </ValidationWrapper>
             <ErrorMessage>{emailError}</ErrorMessage>
@@ -323,6 +318,7 @@ function Join() {
                 bgColor='light'
                 disabled={disable}
                 onClick={getNicknameValidate}
+                type='button'
               />
             </ValidationWrapper>
             <Message isChecked={isValidatedNickname}>✔︎ 2~10자 이내</Message>
