@@ -1,9 +1,9 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import NavBar from '../../components/common/NavBar/NavBar';
+import SpotDetail from '../../components/Modal/SpotDetail';
 
 const Container = styled.div`
-  background-color: var(--ivory);
   position: absolute;
   top: 0;
   right: 0;
@@ -12,13 +12,18 @@ const Container = styled.div`
 `;
 
 const Map = styled.div`
+  display: relative;
   width: 100vw;
-  height: 100vh;
+  height: 85vh;
+  bottom: 0;
+  z-index: 3;
 `;
 
 function Home() {
   const mapContainer = useRef(null);
   const { kakao } = window;
+  const [isOpen, setIsOpen] = useState(false); // 모달 창 Open 여부 저장
+
   const options = {
     center: new kakao.maps.LatLng(36.3515305, 127.3824293),
     level: 12,
@@ -57,17 +62,35 @@ function Home() {
         title: positions[i].title, // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시
         image: markerImage,
       });
+
+      // 마커 클릭 시 이벤트
+      kakao.maps.event.addListener(marker, 'click', () => makeClickListener());
+
       marker.setMap(map);
     }
   }, []);
 
+  const makeClickListener = () => {
+    setIsOpen(true);
+    console.log('good');
+  };
+
+  const handleCloseClick = () => {
+    setIsOpen(false);
+  };
+
   return (
     <Container>
+      <h1 className='ir-hidden'>국내 인생샷 스팟</h1>
       <header>
         <NavBar />
       </header>
       <main>
-        <Map id='map' ref={mapContainer}></Map>
+        <p>원하는 스팟의 자세한 정보를 보시려면 사진을 클릭 해주세요!</p>
+        <h2 className='ir-hidden'>국내 지도</h2>
+        <Map id='map' ref={mapContainer}>
+          {isOpen && <SpotDetail handleCloseClick={handleCloseClick} />}
+        </Map>
       </main>
     </Container>
   );
