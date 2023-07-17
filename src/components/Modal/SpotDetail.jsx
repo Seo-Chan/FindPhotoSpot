@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import UploadImg from '../../assets/images/uploadImg.png';
+import CommonButton from '../common/Button/CommonButton';
 
 const Container = styled.section`
   width: 800px;
@@ -33,7 +34,17 @@ const SpotWriter = styled.p`
   font-size: 2rem;
 `;
 
-function SpotDetail() {
+const ButtonContainer = styled.div`
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+`;
+
+function SpotDetail({ handleCloseClick }) {
+  const closeModal = () => {
+    handleCloseClick();
+  };
+
   return (
     <Container>
       <h2 className='ir-hidden'>스팟 정보</h2>
@@ -48,6 +59,16 @@ function SpotDetail() {
           <ul></ul>
         </div>
       </SpotDesc>
+      <ButtonContainer>
+        <CommonButton
+          size='sm'
+          type='button'
+          bgColor='light'
+          fontColor='black'
+          txt='닫기'
+          onClick={closeModal}
+        />
+      </ButtonContainer>
     </Container>
   );
 }
