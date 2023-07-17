@@ -9,6 +9,15 @@ const Container = styled.div`
   right: 0;
   bottom: 0;
   left: 0;
+  background-color: yellow;
+`;
+
+const Desc = styled.p`
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 500;
+  padding: 10px;
+  z-index: 1;
 `;
 
 const Map = styled.div`
@@ -86,7 +95,7 @@ function Home() {
         <NavBar />
       </header>
       <main>
-        <p>원하는 스팟의 자세한 정보를 보시려면 사진을 클릭 해주세요!</p>
+        <Desc>원하는 스팟의 자세한 정보를 보시려면 사진을 클릭 해주세요!</Desc>
         <h2 className='ir-hidden'>국내 지도</h2>
         <Map id='map' ref={mapContainer}>
           {isOpen && <SpotDetail handleCloseClick={handleCloseClick} />}
