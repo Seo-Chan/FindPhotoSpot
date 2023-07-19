@@ -3,6 +3,9 @@ import styled from 'styled-components';
 import NavBar from '../../components/common/NavBar/NavBar';
 import UploadImg from '../../assets/images/uploadImg.png';
 import CommonButton from '../../components/common/Button/CommonButton';
+// import DaumPostcode from 'react-daum-postcode';
+import PostCode from '../../components/Modal/PostCode';
+import { useSelector } from 'react-redux';
 
 const Container = styled.div`
   padding-bottom: 50px;
@@ -21,7 +24,7 @@ const MainContainer = styled.main`
   align-items: center;
   margin: 30px auto 0;
   padding: 40px;
-  font-size: 1.3rem;
+  font-size: 1.5rem;
   font-weight: 500;
 `;
 
@@ -62,7 +65,7 @@ const ExtraImgContainer = styled.div`
 
 const UpdateForm = styled.form`
   position: relative;
-  width: 800px;
+  width: 73%;
   margin: 20px 0 70px;
 `;
 
@@ -77,7 +80,7 @@ const InputContainer = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 7px;
 `;
 
 const InputText = styled.input`
@@ -88,6 +91,22 @@ const InputText = styled.input`
   font-size: 1.4rem;
   outline: none;
   font-weight: 400;
+`;
+
+const PostSearch = styled.div`
+  display: flex;
+  gap: 20px;
+`;
+
+const PostInputText = styled(InputText)`
+  width: 100%;
+`;
+
+const PostBtn = styled.button`
+  width: 40px;
+  background-color: #cacaca;
+  border: none;
+  padding: 5px;
 `;
 
 const TextArea = styled.textarea`
@@ -105,7 +124,9 @@ function SpotUpdate() {
   const [extraImgFile1, setExtraImgFile1] = useState(UploadImg);
   const [extraImgFile2, setExtraImgFile2] = useState(UploadImg);
   const [extraImgFile3, setExtraImgFile3] = useState(UploadImg);
+  const [isOpen, setIsOpen] = useState(false); // 모달 창 Open 여부 저장
   const imgRef = useRef();
+  const spot = useSelector((state) => state.spot.address); // 스팟 주소 불러오기
 
   const saveMainImgFile = (e) => {
     const file = e.target.files[0];
@@ -148,6 +169,14 @@ function SpotUpdate() {
     };
   };
 
+  const handleOpenClick = () => {
+    setIsOpen(true);
+  };
+
+  const handleCloseClick = () => {
+    setIsOpen(false);
+  };
+
   return (
     <Container>
       <header>
@@ -155,6 +184,7 @@ function SpotUpdate() {
       </header>
       <Title>스팟 등록</Title>
       <MainContainer>
+        {isOpen && <PostCode handleCloseClick={handleCloseClick} />}
         <SpotImg>
           <MainImgContainer>
             <MainImgDesc>스팟 대표 사진</MainImgDesc>
@@ -212,7 +242,12 @@ function SpotUpdate() {
             </InputContainer>
             <InputContainer>
               <label htmlFor='address'>스팟주소</label>
-              <InputText type='text' />
+              <PostSearch>
+                <PostBtn type='button' onClick={handleOpenClick}>
+                  검색
+                </PostBtn>
+                <PostInputText type='text' defaultValue={spot} readOnly />
+              </PostSearch>
             </InputContainer>
             <InputContainer>
               <label htmlFor='spotdesc'>스팟을 소개해주세요!</label>
