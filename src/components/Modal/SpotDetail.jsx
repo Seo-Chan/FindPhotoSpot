@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 // import UploadImg from '../../assets/images/uploadImg.png';
 import Img from '../../assets/images/spotImg.JPG';
 import CommonButton from '../common/Button/CommonButton';
+import HeartImg from '../../assets/icon/icon-heart.png';
+import EmptyHeartImg from '../../assets/icon/icon-emptyHeart.png';
 import ProfileImg from '../../assets/images/profileImg.png';
 
 const Container = styled.section`
@@ -78,6 +80,21 @@ const UserName = styled.p`
   color: black;
 `;
 
+const HeartBtnContainer = styled.div`
+  display: flex;
+  align-items: end;
+  gap: 3px;
+  position: absolute;
+  right: 20px;
+  font-size: 1.3rem;
+`;
+
+const HeartBtn = styled.img`
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+`;
+
 const CloseBtnContainer = styled.div`
   position: absolute;
   bottom: 10px;
@@ -85,12 +102,21 @@ const CloseBtnContainer = styled.div`
 `;
 
 function SpotDetail({ handleCloseClick }) {
+  const [like, setLike] = useState(false);
   const closeModal = () => {
     handleCloseClick();
   };
 
+  const toggleLike = async () => {
+    setLike(!like);
+  };
+
   return (
     <Container>
+      <HeartBtnContainer>
+        <p>20</p>
+        <HeartBtn src={like ? HeartImg : EmptyHeartImg} onClick={toggleLike} />
+      </HeartBtnContainer>
       <SpotInfo>
         <h2 className='ir-hidden'>스팟 정보</h2>
         <ImgContainer>
