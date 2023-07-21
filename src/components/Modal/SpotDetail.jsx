@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 // import UploadImg from '../../assets/images/uploadImg.png';
 import Img from '../../assets/images/spotImg.JPG';
+import CommonButton from '../common/Button/CommonButton';
 import ProfileImg from '../../assets/images/profileImg.png';
 
 const Container = styled.section`
@@ -77,7 +78,17 @@ const UserName = styled.p`
   color: black;
 `;
 
-function SpotDetail() {
+const CloseBtnContainer = styled.div`
+  position: absolute;
+  bottom: 10px;
+  right: 15px;
+`;
+
+function SpotDetail({ handleCloseClick }) {
+  const closeModal = () => {
+    handleCloseClick();
+  };
+
   return (
     <Container>
       <SpotInfo>
@@ -135,6 +146,9 @@ function SpotDetail() {
           </div>
         </SpotDesc>
       </SpotInfo>
+      <CloseBtnContainer>
+        <CommonButton size='sm' type='button' bgColor='light' txt='닫기' onClick={closeModal} />
+      </CloseBtnContainer>
     </Container>
   );
 }
