@@ -68,7 +68,7 @@ const Btn = styled.button`
 
   font-size: ${(props) => (props.size === 'sm' ? '1.3rem' : '1.5rem')};
 
-  color: ${(props) => (props.fontColor ? props.fontColor : 'white')};
+  color: ${(props) => (props.fontColor ? props.fontColor : '#2b2b2b')};
   background-color: ${(props) => {
     switch (props.bgColor) {
       case 'vivid':
