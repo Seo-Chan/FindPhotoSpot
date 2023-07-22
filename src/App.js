@@ -56,6 +56,12 @@ html{
   font-size: 62.5%;
 }
 
+body{
+  background-color: #ffffff;
+  color: #2b2b2b;
+  font-family: 'Pretendard-Regular';
+}
+
 :root{
   --vividPink:#FF9494;
   --pink:#FFCDC9;
