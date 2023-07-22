@@ -2,11 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import LogoImg from '../../assets/images/logo.png';
-import MessageCircle from '../../assets/icon/message-circle.png';
-import GoogleIcon from '../../assets/icon/google.png';
+import MessageCircle from '../../assets/icon/icon-message-circle.png';
+import GoogleIcon from '../../assets/icon/icon-google.png';
 
 const Container = styled.main`
-  background-color: var(--pink);
+  background-color: var(--ivory);
   display: flex;
   flex-direction: column;
   align-items: center;
