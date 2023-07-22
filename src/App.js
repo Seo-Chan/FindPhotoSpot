@@ -8,6 +8,8 @@ import Join from './pages/Join/Join';
 import Home from './pages/Home/Home';
 import SpotUpdate from './pages/SpotUpdate/SpotUpdate';
 import MyPage from './pages/MyPage/MyPage/MyPage';
+import Modal from './components/Modal/SpotDetail';
+import EditProfile from './pages/MyPage/EditProfile/EditProfile';
 
 const GlobalStyled = createGlobalStyle`
 ${reset} // 초기화css
@@ -25,6 +27,20 @@ a{
 }
 a:visited{
   color:inherit;
+}
+
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'omyu_pretty';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-01@1.0/omyu_pretty.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
 }
 
 .ir-hidden {
@@ -60,6 +76,8 @@ function App() {
           <Route path='/join' element={<Join />} />
           <Route path='/spot/spotupdate' element={<SpotUpdate />} />
           <Route path='/mypage' element={<MyPage />} />
+          <Route path='/mypage/editprofile' element={<EditProfile />} />
+          <Route path='/modal' element={<Modal />} />
         </Routes>
       </BrowserRouter>
     </>
