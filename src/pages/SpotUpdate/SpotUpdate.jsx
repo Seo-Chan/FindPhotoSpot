@@ -6,6 +6,7 @@ import CommonButton from '../../components/common/Button/CommonButton';
 // import DaumPostcode from 'react-daum-postcode';
 import PostCode from '../../components/Modal/PostCode';
 import { useSelector } from 'react-redux';
+// import { SET_SPOT } from '../../redux/Spot';
 
 const Container = styled.div`
   padding-bottom: 50px;
@@ -18,7 +19,7 @@ const Title = styled.h1`
   font-weight: 500;
 `;
 
-const MainContainer = styled.main`
+const MainContainer = styled.form`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -63,7 +64,7 @@ const ExtraImgContainer = styled.div`
   gap: 10px;
 `;
 
-const UpdateForm = styled.form`
+const UpdateForm = styled.div`
   position: relative;
   width: 73%;
   margin: 20px 0 70px;
@@ -120,13 +121,27 @@ const TextArea = styled.textarea`
 `;
 
 function SpotUpdate() {
+  // const dispatch = useDispatch();
   const [mainImgFile, setMainImgFile] = useState(UploadImg);
   const [extraImgFile1, setExtraImgFile1] = useState(UploadImg);
   const [extraImgFile2, setExtraImgFile2] = useState(UploadImg);
   const [extraImgFile3, setExtraImgFile3] = useState(UploadImg);
+  const [spotValue, setSpotValue] = useState({
+    spotname: '',
+    address: '',
+    intro: '',
+  });
   const [isOpen, setIsOpen] = useState(false); // 모달 창 Open 여부 저장
   const imgRef = useRef();
   const spot = useSelector((state) => state.spot.address); // 스팟 주소 불러오기
+
+  const inputChangeHandler = (e) => {
+    const { id, value } = e.target;
+    setSpotValue({
+      ...spotValue,
+      [id]: value,
+    });
+  };
 
   const saveMainImgFile = (e) => {
     const file = e.target.files[0];
@@ -177,13 +192,51 @@ function SpotUpdate() {
     setIsOpen(false);
   };
 
+  async function submitHandler(e) {
+    e.preventDefault();
+    // const { spotname: spotValue.spotname, address: spotValue.address, intro: spotValue.intro } = e.target;
+    const { value } = e.target;
+    console.log(value);
+
+    //스토어에 스팟 정보 저장
+    //   dispatch(SET_SPOT({ spotValue }));
+    //   try {
+    //     const response = await fetch(
+    //       'http://49.50.172.178:8080/findPhotoSpot-0.0.1-SNAPSHOT/spot/insertSpot',
+    //       {
+    //         method: 'POST',
+    //         headers: { 'Content-Type': 'application/json' },
+    //         body: JSON.stringify({
+    //           spot: {
+    //             address: 'hi',
+    //             spotName: spotValue.spotname,
+    //             intro: spotValue.intro,
+    //             email: 'test@test.com',
+    //             thumbnailImg: '',
+    //             subImg1: '',
+    //             subImg2: '',
+    //             subImg3: '',
+    //           },
+    //         }),
+    //       },
+    //     );
+    //     //console.log(response);
+    //     const test = await response.json();
+    //     alert(test.message);
+    //   } catch (error) {
+    //     console.log('error');
+    //   }
+    //   // 다음 페이지로 이동
+    //   // navigate('/');
+  }
+
   return (
     <Container>
       <header>
         <NavBar />
       </header>
       <Title>스팟 등록</Title>
-      <MainContainer>
+      <MainContainer onSubmit={submitHandler}>
         {isOpen && <PostCode handleCloseClick={handleCloseClick} />}
         <SpotImg>
           <MainImgContainer>
@@ -238,7 +291,7 @@ function SpotUpdate() {
           <InputFieldset>
             <InputContainer>
               <label htmlFor='spotname'>스팟이름</label>
-              <InputText type='text' />
+              <InputText type='text' id='spotname' onChange={inputChangeHandler} />
             </InputContainer>
             <InputContainer>
               <label htmlFor='address'>스팟주소</label>
@@ -246,12 +299,18 @@ function SpotUpdate() {
                 <PostBtn type='button' onClick={handleOpenClick}>
                   검색
                 </PostBtn>
-                <PostInputText type='text' defaultValue={spot} readOnly />
+                <PostInputText
+                  type='text'
+                  id='address'
+                  defaultValue={spot}
+                  readOnly
+                  onChange={inputChangeHandler}
+                />
               </PostSearch>
             </InputContainer>
             <InputContainer>
               <label htmlFor='spotdesc'>스팟을 소개해주세요!</label>
-              <TextArea cols='10' rows='10' />
+              <TextArea cols='10' rows='10' id='intro' onChange={inputChangeHandler} />
             </InputContainer>
           </InputFieldset>
         </UpdateForm>
