@@ -5,10 +5,10 @@ import LogoImg from '../../../assets/images/logo.png';
 
 const HomeNav = styled.nav`
   padding: 10px 0 10px 20px;
-  background-color: var(--lightPink);
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  background-color: var(--lightPink);
 `;
 
 const LogoContainer = styled.div`
@@ -35,18 +35,18 @@ function NavBar() {
   return (
     <HomeNav>
       <LogoContainer>
-        <Link to={'/login'}>
+        <Link to={'/'}>
           <Logo src={LogoImg}></Logo>
         </Link>
       </LogoContainer>
       <ListContainer>
         <ItemContainer>
-          <Link to={'/login'}>
+          <Link to={'/spot/spotupdate'}>
             <p>스팟등록</p>
           </Link>
         </ItemContainer>
         <ItemContainer>
-          <Link to={'/login'}>
+          <Link to={'/mypage'}>
             <p>마이페이지</p>
           </Link>
         </ItemContainer>
