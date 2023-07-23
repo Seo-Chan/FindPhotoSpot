@@ -5,8 +5,8 @@ import UploadImg from '../../assets/images/uploadImg.png';
 import CommonButton from '../../components/common/Button/CommonButton';
 // import DaumPostcode from 'react-daum-postcode';
 import PostCode from '../../components/Modal/PostCode';
-import { useSelector } from 'react-redux';
-// import { SET_SPOT } from '../../redux/Spot';
+import { useSelector, useDispatch } from 'react-redux';
+import { SET_SPOT } from '../../redux/Spot';
 
 const Container = styled.div`
   padding-bottom: 50px;
@@ -48,9 +48,9 @@ const UploadImgDiv = styled.div`
 `;
 
 const SpotImg = styled.div`
-  width: 800px;
   display: flex;
   flex-direction: row;
+  justify-content: center;
   gap: 80px;
 `;
 
@@ -61,19 +61,19 @@ const AddImgContainer = styled.div``;
 const ExtraImgContainer = styled.div`
   display: flex;
   flex-direction: row;
+  justify-content: center;
   gap: 10px;
 `;
 
 const UpdateForm = styled.div`
   position: relative;
-  width: 73%;
-  margin: 20px 0 70px;
+  margin: 20px auto 70px;
+  width: 60vw;
 `;
 
 const InputFieldset = styled.fieldset`
   display: flex;
   flex-direction: column;
-  width: 100%;
   gap: 16px;
 `;
 
@@ -121,14 +121,13 @@ const TextArea = styled.textarea`
 `;
 
 function SpotUpdate() {
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const [mainImgFile, setMainImgFile] = useState(UploadImg);
   const [extraImgFile1, setExtraImgFile1] = useState(UploadImg);
   const [extraImgFile2, setExtraImgFile2] = useState(UploadImg);
   const [extraImgFile3, setExtraImgFile3] = useState(UploadImg);
   const [spotValue, setSpotValue] = useState({
     spotname: '',
-    address: '',
     intro: '',
   });
   const [isOpen, setIsOpen] = useState(false); // 모달 창 Open 여부 저장
@@ -192,42 +191,58 @@ function SpotUpdate() {
     setIsOpen(false);
   };
 
+  const getImageFile = async () => {
+    const FileElement = document.querySelector('#mainImg'); //input type='file' 의 id
+    console.log(FileElement.files);
+    const formData = new FormData();
+    formData.append('file', FileElement.files[0]);
+    const fileresponse = await fetch(
+      'http://49.50.172.178:8080/findPhotoSpot-0.0.1-SNAPSHOT/image/uploadfile',
+      {
+        method: 'POST',
+        //headers: { 'Content-Type': 'application/json' },//headers 달면 에러남
+        //headers: { 'Content-Type': 'multipart/form-data' },
+        body: formData,
+      },
+    );
+    //console.log(response);
+    const test = await fileresponse.json();
+    console.log(test.imageFilename); //imageFilename 항목에 등록된 이미지 파일명이 나옴
+    return test.imageFilename;
+  };
+
   async function submitHandler(e) {
     e.preventDefault();
-    // const { spotname: spotValue.spotname, address: spotValue.address, intro: spotValue.intro } = e.target;
-    const { value } = e.target;
-    console.log(value);
 
     //스토어에 스팟 정보 저장
-    //   dispatch(SET_SPOT({ spotValue }));
-    //   try {
-    //     const response = await fetch(
-    //       'http://49.50.172.178:8080/findPhotoSpot-0.0.1-SNAPSHOT/spot/insertSpot',
-    //       {
-    //         method: 'POST',
-    //         headers: { 'Content-Type': 'application/json' },
-    //         body: JSON.stringify({
-    //           spot: {
-    //             address: 'hi',
-    //             spotName: spotValue.spotname,
-    //             intro: spotValue.intro,
-    //             email: 'test@test.com',
-    //             thumbnailImg: '',
-    //             subImg1: '',
-    //             subImg2: '',
-    //             subImg3: '',
-    //           },
-    //         }),
-    //       },
-    //     );
-    //     //console.log(response);
-    //     const test = await response.json();
-    //     alert(test.message);
-    //   } catch (error) {
-    //     console.log('error');
-    //   }
-    //   // 다음 페이지로 이동
-    //   // navigate('/');
+    dispatch(SET_SPOT({ spotValue }));
+    try {
+      const response = await fetch(
+        // 'http://localhost:8080/spot/insertSpot',
+        'http://49.50.172.178:8080/findPhotoSpot-0.0.1-SNAPSHOT/spot/insertSpot',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            spot: {
+              address: spot,
+              spotName: spotValue.spotname,
+              intro: spotValue.intro,
+              email: 'test@test.com',
+              thumbnailImg: await getImageFile(),
+              subImg1: '',
+              subImg2: '',
+              subImg3: '',
+            },
+          }),
+        },
+      );
+      //console.log(response);
+      const test = await response.json();
+      alert(test.message);
+    } catch (error) {
+      console.log('error');
+    }
   }
 
   return (
