@@ -29,22 +29,23 @@ const MainContainer = styled.form`
   font-weight: 500;
 `;
 
-const MainImgDesc = styled.p`
-  margin: 5px 0;
+const UploadBox = styled.div`
+  width: 60vw;
+  height: 200px;
+  line-height: 200px;
+  margin-top: 10px;
+  border: 2px dashed var(--pink);
+  text-align: center;
+  cursor: pointer;
+`;
+
+const UploadIcon = styled.img`
+  width: 130px;
+  vertical-align: middle;
 `;
 
 const ImgUpload = styled.input`
   display: none;
-`;
-
-const UploadImgDiv = styled.div`
-  background-image: url(${(props) => props.image});
-  background-size: cover;
-  background-position: center;
-  width: 170px;
-  height: 200px;
-  border: 2px solid var(--pink);
-  border-radius: 5px;
 `;
 
 const SpotImg = styled.div`
@@ -55,20 +56,21 @@ const SpotImg = styled.div`
 `;
 
 const ExtraImgList = styled.ol`
-  /* display: flex;
-  flex-direction: row;
-  justify-content: center;
-  gap: 10px; */
+  margin: 5px 0;
+  height: 200px;
   display: flex;
   flex-direction: row;
   align-items: center;
-  overflow-x: scroll;
   gap: 8px;
-  background-color: var(--vividPink);
+  overflow-x: scroll;
 `;
 
 const ImageContainer = styled.div`
   position: relative;
+`;
+
+const Image = styled.img`
+  object-fit: cover;
 `;
 
 const DeleteBtn = styled.button`
@@ -87,9 +89,14 @@ const DeleteImg = styled.img`
   height: 22px;
 `;
 
-const Image = styled.img`
-  object-fit: cover;
-  border-radius: 10px;
+const AddFileBtn = styled.button`
+  width: 60vw;
+  padding: 10px;
+  color: #000000;
+  border: none;
+  background-color: #cacaca;
+  border-radius: 5px;
+  font-size: 1.5rem;
 `;
 
 const UpdateForm = styled.div`
@@ -175,6 +182,14 @@ function SpotUpdate() {
   const [isOpen, setIsOpen] = useState(false); // 모달 창 Open 여부 저장
   const imgRef = useRef();
   const spot = useSelector((state) => state.spot.address); // 스팟 주소 불러오기
+
+  const handleClick = () => {
+    if (imageList.length >= 4) {
+      alert('사진은 4장까지 추가할 수 있습니다.');
+      return;
+    }
+    imgRef.current?.click();
+  };
 
   const inputChangeHandler = (e) => {
     const { id, value } = e.target;
@@ -276,46 +291,54 @@ function SpotUpdate() {
       <MainContainer onSubmit={submitHandler}>
         {isOpen && <PostCode handleCloseClick={handleCloseClick} />}
         <SpotImg>
-          <MainImgDesc>스팟 사진 (4장 까지 가능)</MainImgDesc>
-          <ExtraImgList>
-            <label htmlFor='spotImg'>
-              <UploadImgDiv image={UploadImg}></UploadImgDiv>
-            </label>
-            <ImgUpload
-              type='file'
-              multiple
-              accept='.jpg, .png, .jpeg, .bmp'
-              id='spotImg'
-              onChange={onChangeImage}
-              ref={imgRef}
-            />
-            {imageList.map((img) => (
-              <li key={img.id}>
-                <ImageContainer>
-                  <Image
-                    src={img.result}
-                    alt=''
-                    style={
-                      imageList.length === 1
-                        ? {
-                            width: '304px',
-                            height: '228px',
-                          }
-                        : {
-                            width: '168px',
-                            height: '126px',
-                          }
-                    }
-                  />
-                  <DeleteBtn
-                    onClick={() => setImageList((prev) => prev.filter((a) => a.id !== img.id))}
-                  >
-                    <DeleteImg src={IconDelete} />
-                  </DeleteBtn>
-                </ImageContainer>
-              </li>
-            ))}
-          </ExtraImgList>
+          <label htmlFor='spotImg'>사진 등록 (최대 4장)</label>
+          {imageList.length !== 0 ? (
+            <>
+              <ExtraImgList>
+                {imageList.map((img) => (
+                  <li key={img.id}>
+                    <ImageContainer>
+                      <Image
+                        src={img.result}
+                        alt=''
+                        style={
+                          imageList.length === 2
+                            ? {
+                                width: '170px',
+                                height: '200px',
+                              }
+                            : {
+                                width: '140px',
+                                height: '170px',
+                              }
+                        }
+                      />
+                      <DeleteBtn
+                        onClick={() => setImageList((prev) => prev.filter((a) => a.id !== img.id))}
+                      >
+                        <DeleteImg src={IconDelete} />
+                      </DeleteBtn>
+                    </ImageContainer>
+                  </li>
+                ))}
+              </ExtraImgList>
+              <AddFileBtn type='button' onClick={handleClick}>
+                사진 추가하기
+              </AddFileBtn>
+            </>
+          ) : (
+            <UploadBox onClick={handleClick}>
+              <UploadIcon src={UploadImg} />
+            </UploadBox>
+          )}
+          <ImgUpload
+            type='file'
+            multiple
+            accept='.jpg, .png, .jpeg, .bmp'
+            id='spotImg'
+            onChange={onChangeImage}
+            ref={imgRef}
+          />
         </SpotImg>
         <UpdateForm>
           <InputFieldset>
