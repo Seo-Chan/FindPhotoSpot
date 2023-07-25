@@ -3,10 +3,10 @@ import styled from 'styled-components';
 import NavBar from '../../components/common/NavBar/NavBar';
 import UploadImg from '../../assets/images/uploadImg.png';
 import CommonButton from '../../components/common/Button/CommonButton';
-// import DaumPostcode from 'react-daum-postcode';
 import PostCode from '../../components/Modal/PostCode';
 import { useSelector, useDispatch } from 'react-redux';
 import { SET_SPOT } from '../../redux/Spot';
+import IconDelete from '../../assets/icon/icon-delete.png';
 
 const Container = styled.div`
   padding-bottom: 50px;
@@ -49,20 +49,41 @@ const UploadImgDiv = styled.div`
 
 const SpotImg = styled.div`
   display: flex;
-  flex-direction: row;
-  justify-content: center;
-  gap: 80px;
+  flex-direction: column;
+  justify-content: start;
+  width: 60vw;
 `;
 
-const MainImgContainer = styled.div``;
-
-const AddImgContainer = styled.div``;
-
-const ExtraImgContainer = styled.div`
-  display: flex;
+const ExtraImgList = styled.ol`
+  /* display: flex;
   flex-direction: row;
   justify-content: center;
-  gap: 10px;
+  gap: 10px; */
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  overflow-x: scroll;
+  gap: 8px;
+  background-color: var(--vividPink);
+`;
+
+const ImageContainer = styled.div`
+  position: relative;
+`;
+
+const DeleteBtn = styled.button`
+  background-color: transparent;
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  z-index: 1;
+  border: none;
+  cursor: pointer;
+`;
+
+const Image = styled.img`
+  object-fit: cover;
+  border-radius: 10px;
 `;
 
 const UpdateForm = styled.div`
@@ -120,12 +141,27 @@ const TextArea = styled.textarea`
   font-weight: 400;
 `;
 
+const baseURL = 'http://49.50.172.178:8080/findPhotoSpot-0.0.1-SNAPSHOT';
+
+// base64 -> 이미지 File로 전환
+const dataURLtoFile = (dataUrl, filename) => {
+  const arr = dataUrl.split(',');
+  const mimeMatch = arr[0].match(/:(.*?);/);
+  const mime = mimeMatch != null ? mimeMatch[1] : 'image/png';
+  const bstr = atob(arr[1]);
+  let n = bstr.length;
+  const u8arr = new Uint8Array(n);
+
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+
+  return new File([u8arr], filename, { type: mime });
+};
+
 function SpotUpdate() {
   const dispatch = useDispatch();
-  const [mainImgFile, setMainImgFile] = useState(UploadImg);
-  const [extraImgFile1, setExtraImgFile1] = useState(UploadImg);
-  const [extraImgFile2, setExtraImgFile2] = useState(UploadImg);
-  const [extraImgFile3, setExtraImgFile3] = useState(UploadImg);
+  const [imageList, setImageList] = useState([]);
   const [spotValue, setSpotValue] = useState({
     spotname: '',
     intro: '',
@@ -142,45 +178,50 @@ function SpotUpdate() {
     });
   };
 
-  const saveMainImgFile = (e) => {
-    const file = e.target.files[0];
-    const reader = new FileReader();
-    if (file) {
-      reader.readAsDataURL(file);
+  //이미지 미리보기
+  const onChangeImage = async (e) => {
+    const { files } = e.target;
+    if (files && files[0].size > 10 * 1024 * 1024) {
+      alert('이미지 파일 사이즈는 10MB 이내로 등록 가능합니다.');
+      return;
     }
-    reader.onloadend = () => {
-      setMainImgFile(reader.result);
-    };
+    //파일 업로드 용량 제한(10MB)
+    if (files.length > 4 || imageList.length > 3) {
+      alert('첨부 가능 이미지 수는 최대 4장입니다.');
+      return;
+    }
+    for await (const file of files || []) {
+      const result = await new Promise((resolve) => {
+        const fileReader = new FileReader();
+        fileReader.readAsDataURL(file);
+        fileReader.onload = (e) => {
+          const src = e.target.result;
+          resolve(src);
+        };
+      });
+
+      const id = Date.now();
+      setImageList((prev) => [...prev, { id, result, filename: file.name }]);
+    }
+    e.target.value = '';
   };
-  const saveExtraImgFile1 = (e) => {
-    const file = e.target.files[0];
-    const reader = new FileReader();
-    if (file) {
-      reader.readAsDataURL(file);
+
+  // 서버로 이미지 보내기
+  const getImageFile = async () => {
+    if (imageList.length === 0) throw new Error('등록된 미리보기 이미지가 없습니다');
+
+    const formData = new FormData();
+    for (const image of imageList) {
+      formData.append('imageList', dataURLtoFile(image.result, image.filename));
     }
-    reader.onloadend = () => {
-      setExtraImgFile1(reader.result);
-    };
-  };
-  const saveExtraImgFile2 = (e) => {
-    const file = e.target.files[0];
-    const reader = new FileReader();
-    if (file) {
-      reader.readAsDataURL(file);
-    }
-    reader.onloadend = () => {
-      setExtraImgFile2(reader.result);
-    };
-  };
-  const saveExtraImgFile3 = (e) => {
-    const file = e.target.files[0];
-    const reader = new FileReader();
-    if (file) {
-      reader.readAsDataURL(file);
-    }
-    reader.onloadend = () => {
-      setExtraImgFile3(reader.result);
-    };
+    const res = await fetch(`${baseURL}/image/uploadfiles`, {
+      method: 'POST',
+      body: formData,
+    });
+    //console.log(response);
+    const test = await res.json();
+    console.log(test.imageFilename); //imageFilename 항목에 등록된 이미지 파일명이 , 로 구분하여 나옴
+    return test.imageFilename;
   };
 
   const handleOpenClick = () => {
@@ -191,34 +232,13 @@ function SpotUpdate() {
     setIsOpen(false);
   };
 
-  const getImageFile = async () => {
-    const FileElement = document.querySelector('#mainImg'); //input type='file' 의 id
-    console.log(FileElement.files);
-    const formData = new FormData();
-    formData.append('file', FileElement.files[0]);
-    const fileresponse = await fetch(
-      'http://49.50.172.178:8080/findPhotoSpot-0.0.1-SNAPSHOT/image/uploadfile',
-      {
-        method: 'POST',
-        //headers: { 'Content-Type': 'application/json' },//headers 달면 에러남
-        //headers: { 'Content-Type': 'multipart/form-data' },
-        body: formData,
-      },
-    );
-    //console.log(response);
-    const test = await fileresponse.json();
-    console.log(test.imageFilename); //imageFilename 항목에 등록된 이미지 파일명이 나옴
-    return test.imageFilename;
-  };
-
   async function submitHandler(e) {
     e.preventDefault();
-
+    console.log(spot);
     //스토어에 스팟 정보 저장
-    dispatch(SET_SPOT({ spotValue }));
+    dispatch(SET_SPOT(spotValue.intro, spotValue.spotname, spot));
     try {
       const response = await fetch(
-        // 'http://localhost:8080/spot/insertSpot',
         'http://49.50.172.178:8080/findPhotoSpot-0.0.1-SNAPSHOT/spot/insertSpot',
         {
           method: 'POST',
@@ -229,15 +249,11 @@ function SpotUpdate() {
               spotName: spotValue.spotname,
               intro: spotValue.intro,
               email: 'test@test.com',
-              thumbnailImg: await getImageFile(),
-              subImg1: '',
-              subImg2: '',
-              subImg3: '',
+              imageFilename: await getImageFile(),
             },
           }),
         },
       );
-      //console.log(response);
       const test = await response.json();
       alert(test.message);
     } catch (error) {
@@ -254,53 +270,46 @@ function SpotUpdate() {
       <MainContainer onSubmit={submitHandler}>
         {isOpen && <PostCode handleCloseClick={handleCloseClick} />}
         <SpotImg>
-          <MainImgContainer>
-            <MainImgDesc>스팟 대표 사진</MainImgDesc>
-            <label htmlFor='mainImg'>
-              <UploadImgDiv image={mainImgFile} ref={imgRef}></UploadImgDiv>
+          <MainImgDesc>스팟 사진 (4장 까지 가능)</MainImgDesc>
+          <ExtraImgList>
+            <label htmlFor='spotImg'>
+              <UploadImgDiv image={UploadImg}></UploadImgDiv>
             </label>
             <ImgUpload
               type='file'
-              accept='image/*'
-              id='mainImg'
-              onChange={(e) => saveMainImgFile(e)}
+              multiple
+              accept='.jpg, .png, .jpeg, .bmp'
+              id='spotImg'
+              onChange={onChangeImage}
+              ref={imgRef}
             />
-          </MainImgContainer>
-          <AddImgContainer>
-            <MainImgDesc>추가 사진 (3장 까지 가능)</MainImgDesc>
-            <ExtraImgContainer>
-              <label htmlFor='extraImg1'>
-                <UploadImgDiv image={extraImgFile1}></UploadImgDiv>
-              </label>
-              <ImgUpload
-                type='file'
-                accept='image/*'
-                id='extraImg1'
-                onChange={(e) => saveExtraImgFile1(e)}
-                ref={imgRef}
-              />
-              <label htmlFor='extraImg2'>
-                <UploadImgDiv image={extraImgFile2}></UploadImgDiv>
-              </label>
-              <ImgUpload
-                type='file'
-                accept='image/*'
-                id='extraImg2'
-                onChange={(e) => saveExtraImgFile2(e)}
-                ref={imgRef}
-              />
-              <label htmlFor='extraImg3'>
-                <UploadImgDiv image={extraImgFile3}></UploadImgDiv>
-              </label>
-              <ImgUpload
-                type='file'
-                accept='image/*'
-                id='extraImg3'
-                onChange={(e) => saveExtraImgFile3(e)}
-                ref={imgRef}
-              />
-            </ExtraImgContainer>
-          </AddImgContainer>
+            {imageList.map((img) => (
+              <li key={img.id}>
+                <ImageContainer>
+                  <Image
+                    src={img.result}
+                    alt=''
+                    style={
+                      imageList.length === 1
+                        ? {
+                            width: '304px',
+                            height: '228px',
+                          }
+                        : {
+                            width: '168px',
+                            height: '126px',
+                          }
+                    }
+                  />
+                  <DeleteBtn
+                    onClick={() => setImageList((prev) => prev.filter((a) => a.id !== img.id))}
+                  >
+                    <image src={IconDelete} />
+                  </DeleteBtn>
+                </ImageContainer>
+              </li>
+            ))}
+          </ExtraImgList>
         </SpotImg>
         <UpdateForm>
           <InputFieldset>
