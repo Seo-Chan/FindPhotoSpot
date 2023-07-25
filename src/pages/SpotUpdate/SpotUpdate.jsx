@@ -304,7 +304,7 @@ function SpotUpdate() {
                         src={img.result}
                         alt=''
                         style={
-                          imageList.length === 2
+                          imageList.length <= 2
                             ? {
                                 width: '170px',
                                 height: '200px',
