@@ -57,11 +57,11 @@ const SpotImg = styled.div`
 
 const ExtraImgList = styled.ol`
   margin: 5px 0;
-  height: 200px;
+  height: 210px;
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 8px;
+  gap: 15px;
   overflow-x: scroll;
 `;
 
@@ -74,10 +74,12 @@ const Image = styled.img`
 `;
 
 const DeleteBtn = styled.button`
-  background-color: transparent;
+  width: 18px;
+  height: 18px;
+  background-color: #cacaca;
   position: absolute;
-  top: 6px;
-  right: 6px;
+  top: -3px;
+  right: -3px;
   z-index: 1;
   border: none;
   cursor: pointer;
@@ -85,8 +87,8 @@ const DeleteBtn = styled.button`
 
 const DeleteImg = styled.img`
   display: inline-block;
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
 `;
 
 const AddFileBtn = styled.button`
