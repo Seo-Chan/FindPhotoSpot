@@ -81,6 +81,12 @@ const DeleteBtn = styled.button`
   cursor: pointer;
 `;
 
+const DeleteImg = styled.img`
+  display: inline-block;
+  width: 22px;
+  height: 22px;
+`;
+
 const Image = styled.img`
   object-fit: cover;
   border-radius: 10px;
@@ -304,7 +310,7 @@ function SpotUpdate() {
                   <DeleteBtn
                     onClick={() => setImageList((prev) => prev.filter((a) => a.id !== img.id))}
                   >
-                    <image src={IconDelete} />
+                    <DeleteImg src={IconDelete} />
                   </DeleteBtn>
                 </ImageContainer>
               </li>
