@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 // import UploadImg from '../../assets/images/uploadImg.png';
-import Img from '../../assets/images/spotImg.JPG';
+// import Img from '../../assets/images/spotImg.JPG';
 import CommonButton from '../common/Button/CommonButton';
 import HeartImg from '../../assets/icon/icon-heart.png';
 import EmptyHeartImg from '../../assets/icon/icon-emptyHeart.png';
@@ -101,8 +101,48 @@ const CloseBtnContainer = styled.div`
   right: 15px;
 `;
 
-function SpotDetail({ handleCloseClick }) {
+function SpotDetail({ handleCloseClick, spotID }) {
   const [like, setLike] = useState(false);
+  const [spotValue, setSpotValue] = useState({
+    email: '',
+    spotName: '',
+    address: '',
+    intro: '',
+    thumbnailImg: '',
+  });
+
+  useEffect(() => {
+    const getSpotDetail = async () => {
+      try {
+        const response = await fetch(
+          'http://49.50.172.178:8080/findPhotoSpot-0.0.1-SNAPSHOT/spot/findSpotById',
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              spot: {
+                spotId: spotID,
+              },
+            }),
+          },
+        );
+        const test = await response.json();
+        const spotData = JSON.parse(test.spot);
+        setSpotValue({
+          ...spotValue,
+          email: spotData.email,
+          address: spotData.address,
+          spotName: spotData.spotName,
+          intro: spotData.intro,
+          thumbnailImg: spotData.thumbnailImg,
+        });
+      } catch (error) {
+        console.log('error');
+      }
+    };
+    getSpotDetail();
+  }, [spotID]);
+
   const closeModal = () => {
     handleCloseClick();
   };
@@ -120,22 +160,21 @@ function SpotDetail({ handleCloseClick }) {
       <SpotInfo>
         <h2 className='ir-hidden'>스팟 정보</h2>
         <ImgContainer>
-          <ImgFile src={Img} />
+          <ImgFile
+            src={`http://49.50.172.178:8080/findPhotoSpot-0.0.1-SNAPSHOT/image/${spotValue.thumbnailImg}`}
+          />
         </ImgContainer>
         <SpotDesc>
-          <Title>국립세종수목원</Title>
-          <SpotAdd>세종 수목원로 136</SpotAdd>
+          <Title>{spotValue.spotName}</Title>
+          <SpotAdd>{spotValue.address}</SpotAdd>
           <div>
             <SpotWriter>Spot Review</SpotWriter>
             <UserList>
               <UserContainer>
                 <ProfileImage src={ProfileImg} alt='프로필이미지' />
                 <div>
-                  <UserName>모모바라기</UserName>
-                  <p>
-                    실내 수목원이 있어서 요즘 같이 비오는 날씨에도 쾌적하게 둘러볼 수 있어요!
-                    사진스팟도 많아서 너무 좋아요
-                  </p>
+                  <UserName>{spotValue.email}</UserName>
+                  <p>{spotValue.intro}</p>
                 </div>
               </UserContainer>
               <UserContainer>
