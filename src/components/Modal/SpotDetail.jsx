@@ -4,6 +4,7 @@ import CommonButton from '../common/Button/CommonButton';
 import HeartImg from '../../assets/icon/icon-heart.png';
 import EmptyHeartImg from '../../assets/icon/icon-emptyHeart.png';
 import ProfileImg from '../../assets/images/profileImg.png';
+import ImageSlider from '../ImageSlider';
 
 const Container = styled.section`
   width: 700px;
@@ -216,7 +217,9 @@ function SpotDetail({ handleCloseClick, spotID }) {
       </HeartBtnContainer>
       <SpotInfo>
         <h2 className='ir-hidden'>스팟 정보</h2>
-        <ImgContainer></ImgContainer>
+        <ImgContainer>
+          {!!spotValue.imageList && <ImageSlider image={spotValue.imageList} />}
+        </ImgContainer>
         <SpotDesc>
           <Title>{spotValue.spotName}</Title>
           <SpotAdd>{spotValue.address}</SpotAdd>
