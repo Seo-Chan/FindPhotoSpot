@@ -30,7 +30,7 @@ const MainContainer = styled.form`
 `;
 
 const UploadBox = styled.div`
-  width: 60vw;
+  width: 500px;
   height: 200px;
   line-height: 200px;
   margin-top: 10px;
@@ -52,17 +52,26 @@ const SpotImg = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: start;
-  width: 60vw;
+  width: 650px;
 `;
 
 const ExtraImgList = styled.ol`
   margin: 5px 0;
-  height: 210px;
+  height: 220px;
   display: flex;
   flex-direction: row;
   align-items: center;
   gap: 15px;
-  overflow-x: scroll;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  &::-webkit-scrollbar {
+    height: 10px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--vividPink);
+    border-radius: 6px;
+  }
 `;
 
 const ImageContainer = styled.div`
@@ -92,7 +101,7 @@ const DeleteImg = styled.img`
 `;
 
 const AddFileBtn = styled.button`
-  width: 60vw;
+  width: 650px;
   padding: 10px;
   color: #000000;
   border: none;
@@ -104,7 +113,7 @@ const AddFileBtn = styled.button`
 const UpdateForm = styled.div`
   position: relative;
   margin: 20px auto 70px;
-  width: 60vw;
+  width: 650px;
 `;
 
 const InputFieldset = styled.fieldset`
@@ -303,17 +312,10 @@ function SpotUpdate() {
                       <Image
                         src={img.result}
                         alt=''
-                        style={
-                          imageList.length <= 2
-                            ? {
-                                width: '170px',
-                                height: '200px',
-                              }
-                            : {
-                                width: '140px',
-                                height: '170px',
-                              }
-                        }
+                        style={{
+                          width: '170px',
+                          height: '200px',
+                        }}
                       />
                       <DeleteBtn
                         onClick={() => setImageList((prev) => prev.filter((a) => a.id !== img.id))}
