@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-// import UploadImg from '../../assets/images/uploadImg.png';
-// import Img from '../../assets/images/spotImg.JPG';
 import CommonButton from '../common/Button/CommonButton';
 import HeartImg from '../../assets/icon/icon-heart.png';
 import EmptyHeartImg from '../../assets/icon/icon-emptyHeart.png';
@@ -10,6 +8,7 @@ import ProfileImg from '../../assets/images/profileImg.png';
 const Container = styled.section`
   width: 700px;
   height: 400px;
+  overflow: hidden;
   background-color: #ffffff;
   padding: 15px;
   margin: 13vh auto;
@@ -28,9 +27,9 @@ const SpotInfo = styled.div`
 
 const ImgContainer = styled.div``;
 
-const ImgFile = styled.img`
-  width: 220px;
-`;
+// const ImgFile = styled.img`
+//   width: 220px;
+// `;
 
 const SpotDesc = styled.div`
   display: flex;
@@ -102,13 +101,14 @@ const CloseBtnContainer = styled.div`
 `;
 
 function SpotDetail({ handleCloseClick, spotID }) {
-  const [like, setLike] = useState(false);
   const [spotValue, setSpotValue] = useState({
     email: '',
     spotName: '',
     address: '',
     intro: '',
-    thumbnailImg: '',
+    imageList: [],
+    hearted: false,
+    likeCount: 0,
   });
 
   useEffect(() => {
@@ -134,7 +134,9 @@ function SpotDetail({ handleCloseClick, spotID }) {
           address: spotData.address,
           spotName: spotData.spotName,
           intro: spotData.intro,
-          thumbnailImg: spotData.thumbnailImg,
+          imageList: spotData.imageList,
+          hearted: spotData.hearted,
+          likeCount: spotData.likeCount,
         });
       } catch (error) {
         console.log('error');
@@ -147,23 +149,74 @@ function SpotDetail({ handleCloseClick, spotID }) {
     handleCloseClick();
   };
 
-  const toggleLike = async () => {
-    setLike(!like);
+  const handleHeartClick = async () => {
+    try {
+      const response = await fetch(
+        'http://49.50.172.178:8080/findPhotoSpot-0.0.1-SNAPSHOT/spotLike/like',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            spotLike: {
+              spotId: spotID,
+              email: 'test2@test.com',
+            },
+          }),
+        },
+      );
+      const test = await response.json();
+      console.log(test);
+      setSpotValue((prev) => ({
+        ...prev,
+        hearted: true,
+        likeCount: test.likeCount,
+      }));
+      // dispatch(FETCH_POST_DATA({ id: postId, token }));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleUnHeartClick = async () => {
+    try {
+      const response = await fetch(
+        'http://49.50.172.178:8080/findPhotoSpot-0.0.1-SNAPSHOT/spotLike/unLike',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            spotLike: {
+              spotId: spotID,
+              email: 'test2@test.com',
+            },
+          }),
+        },
+      );
+      const test = await response.json();
+      console.log(test);
+      setSpotValue((prev) => ({
+        ...prev,
+        hearted: false,
+        likeCount: test.likeCount,
+      }));
+      // dispatch(FETCH_POST_DATA({ id: postId, token }));
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
     <Container>
       <HeartBtnContainer>
-        <p>20</p>
-        <HeartBtn src={like ? HeartImg : EmptyHeartImg} onClick={toggleLike} />
+        <p>{spotValue.likeCount}</p>
+        <HeartBtn
+          src={spotValue.hearted ? HeartImg : EmptyHeartImg}
+          onClick={spotValue.hearted ? handleUnHeartClick : handleHeartClick}
+        />
       </HeartBtnContainer>
       <SpotInfo>
         <h2 className='ir-hidden'>스팟 정보</h2>
-        <ImgContainer>
-          <ImgFile
-            src={`http://49.50.172.178:8080/findPhotoSpot-0.0.1-SNAPSHOT/image/${spotValue.thumbnailImg}`}
-          />
-        </ImgContainer>
+        <ImgContainer></ImgContainer>
         <SpotDesc>
           <Title>{spotValue.spotName}</Title>
           <SpotAdd>{spotValue.address}</SpotAdd>
