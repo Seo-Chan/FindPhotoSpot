@@ -93,6 +93,10 @@ const HeartBtn = styled.img`
   width: 18px;
   height: 18px;
   cursor: pointer;
+  &:hover {
+    transition: 0.5s;
+    transform: scale(1.2);
+  }
 `;
 
 const CloseBtnContainer = styled.div`
