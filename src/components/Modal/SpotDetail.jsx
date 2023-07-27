@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import CommonButton from '../common/Button/CommonButton';
 import HeartImg from '../../assets/icon/icon-heart.png';
 import EmptyHeartImg from '../../assets/icon/icon-emptyHeart.png';
-import ProfileImg from '../../assets/images/profileImg.png';
 import ImageSlider from '../ImageSlider';
 
 const Container = styled.section`
@@ -59,25 +58,36 @@ const UserList = styled.ul`
   overflow: auto;
 `;
 
-const UserContainer = styled.div`
+const UserName = styled.p`
+  font-weight: 600;
+  font-size: 1.2rem;
+  color: black;
+`;
+
+const SpotReview = styled.li`
   display: flex;
-  gap: 10px;
+  flex-direction: row;
   align-items: center;
-  & + & {
-    margin-top: 10px;
+  gap: 15px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #ffffff;
+  img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
   }
 `;
 
-const ProfileImage = styled.img`
-  width: 50px;
-  border-radius: 50%;
+const Review = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 `;
 
-const UserName = styled.p`
-  margin-bottom: 5px;
-  font-weight: 600;
-  font-size: 1.1rem;
-  color: black;
+const SpotIntro = styled.p`
+  font-size: 1.2rem;
+  line-height: 1.2;
 `;
 
 const HeartBtnContainer = styled.div`
@@ -115,6 +125,7 @@ function SpotDetail({ handleCloseClick, spotID }) {
     hearted: false,
     likeCount: 0,
   });
+  const [spotReview, setSpotReview] = useState([]);
 
   useEffect(() => {
     const getSpotDetail = async () => {
@@ -147,7 +158,31 @@ function SpotDetail({ handleCloseClick, spotID }) {
         console.log('error');
       }
     };
+
+    const getSpotReview = async () => {
+      try {
+        const response = await fetch(
+          'http://49.50.172.178:8080/findPhotoSpot-0.0.1-SNAPSHOT/user/findRecommender',
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              user: {
+                spotId: spotID,
+                email: 'test2@test.com',
+              },
+            }),
+          },
+        );
+        const test = await response.json();
+        const spotReview = JSON.parse(test.user);
+        setSpotReview(spotReview);
+      } catch (error) {
+        console.log('error');
+      }
+    };
     getSpotDetail();
+    getSpotReview();
   }, [spotID]);
 
   const closeModal = () => {
@@ -164,7 +199,7 @@ function SpotDetail({ handleCloseClick, spotID }) {
           body: JSON.stringify({
             spotLike: {
               spotId: spotID,
-              email: 'test2@test.com',
+              email: 'test@test.com',
             },
           }),
         },
@@ -192,7 +227,7 @@ function SpotDetail({ handleCloseClick, spotID }) {
           body: JSON.stringify({
             spotLike: {
               spotId: spotID,
-              email: 'test2@test.com',
+              email: 'test@test.com',
             },
           }),
         },
@@ -230,43 +265,18 @@ function SpotDetail({ handleCloseClick, spotID }) {
           <div>
             <SpotWriter>Spot Review</SpotWriter>
             <UserList>
-              <UserContainer>
-                <ProfileImage src={ProfileImg} alt='프로필이미지' />
-                <div>
-                  <UserName>{spotValue.email}</UserName>
-                  <p>{spotValue.intro}</p>
-                </div>
-              </UserContainer>
-              <UserContainer>
-                <ProfileImage src={ProfileImg} alt='프로필이미지' />
-                <div>
-                  <UserName>모모바라기</UserName>
-                  <p>
-                    실내 수목원이 있어서 요즘 같이 비오는 날씨에도 쾌적하게 둘러볼 수 있어요!
-                    사진스팟도 많아서 너무 좋아요
-                  </p>
-                </div>
-              </UserContainer>
-              <UserContainer>
-                <ProfileImage src={ProfileImg} alt='프로필이미지' />
-                <div>
-                  <UserName>모모바라기</UserName>
-                  <p>
-                    실내 수목원이 있어서 요즘 같이 비오는 날씨에도 쾌적하게 둘러볼 수 있어요!
-                    사진스팟도 많아서 너무 좋아요
-                  </p>
-                </div>
-              </UserContainer>
-              <UserContainer>
-                <ProfileImage src={ProfileImg} alt='프로필이미지' />
-                <div>
-                  <UserName>모모바라기</UserName>
-                  <p>
-                    실내 수목원이 있어서 요즘 같이 비오는 날씨에도 쾌적하게 둘러볼 수 있어요!
-                    사진스팟도 많아서 너무 좋아요
-                  </p>
-                </div>
-              </UserContainer>
+              {!!spotReview.length &&
+                spotReview.map((review, index) => (
+                  <SpotReview key={index}>
+                    <img
+                      src={`http://49.50.172.178:8080/findPhotoSpot-0.0.1-SNAPSHOT/image/${review.profile_img}`}
+                    />
+                    <Review>
+                      <UserName>{review.nickname}</UserName>
+                      <SpotIntro>{review.intro}</SpotIntro>
+                    </Review>
+                  </SpotReview>
+                ))}
             </UserList>
           </div>
         </SpotDesc>
