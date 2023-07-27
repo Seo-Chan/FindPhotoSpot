@@ -82,8 +82,8 @@ const UserName = styled.p`
 
 const HeartBtnContainer = styled.div`
   display: flex;
-  align-items: end;
-  gap: 3px;
+  align-items: center;
+  gap: 5px;
   position: absolute;
   right: 20px;
   font-size: 1.3rem;
