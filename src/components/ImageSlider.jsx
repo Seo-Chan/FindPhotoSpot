@@ -22,6 +22,7 @@ const PostImg = styled.img`
   object-fit: cover;
   border-radius: 5px;
   transform: translateX(${(props) => props.imageCount * 220 * -1 + 'px'});
+  transition: transform 0.3s ease-in-out;
 `;
 const Button = styled.button`
   width: 20px;
@@ -31,12 +32,13 @@ const Button = styled.button`
   top: 50%;
   transform: translateY(-50%);
   border: none;
-  background-color: var(--pink);
+  background-color: var(--lightPink);
   opacity: 70%;
   cursor: pointer;
   img {
     width: 70%;
-    vertical-align: top;
+    position: relative;
+    top: 2px;
   }
   img:hover {
     transition: 0.5s;
@@ -65,7 +67,7 @@ const PageIcon = styled.div`
   box-shadow: 1px 1px 2px var(--black);
   border-radius: 4px;
   cursor: pointer;
-  transition: ease-in 0.2s;
+  transition: ease-in 0.3s;
   &.icon {
     opacity: 0.3;
   }
