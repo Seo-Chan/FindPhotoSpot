@@ -52,6 +52,10 @@ function Home() {
   useEffect(() => {
     const map = new kakao.maps.Map(mapContainer.current, options);
 
+    // 지도 확대,축소 제어하는 줌 컨트롤 생성
+    var zoomControl = new kakao.maps.ZoomControl();
+    map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
+
     fetch('http://49.50.172.178:8080/findPhotoSpot-0.0.1-SNAPSHOT/spot/searchAll', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -100,7 +104,7 @@ function Home() {
         <NavBar />
       </header>
       <main>
-        <Desc>원하는 스팟의 자세한 정보를 보시려면 사진을 클릭 해주세요!</Desc>
+        <Desc>원하는 스팟의 자세한 정보를 보시려면 마커를 클릭 해주세요!</Desc>
         <h2 className='ir-hidden'>국내 지도</h2>
         <Map id='map' ref={mapContainer}>
           {isOpen && <SpotDetail handleCloseClick={handleCloseClick} spotID={spotID} />}
