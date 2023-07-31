@@ -4,6 +4,7 @@ import CommonButton from '../common/Button/CommonButton';
 import HeartImg from '../../assets/icon/icon-heart.png';
 import EmptyHeartImg from '../../assets/icon/icon-emptyHeart.png';
 import ImageSlider from '../ImageSlider';
+import { getSpotData, getSpotReviewData, heartData, unheartData } from '../../api/api';
 
 const Container = styled.section`
   width: 700px;
@@ -130,57 +131,44 @@ function SpotDetail({ handleCloseClick, spotID }) {
   useEffect(() => {
     const getSpotDetail = async () => {
       try {
-        const response = await fetch(
-          'http://49.50.172.178:8080/findPhotoSpot-0.0.1-SNAPSHOT/spot/findSpotById',
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              spot: {
-                spotId: spotID,
-              },
-            }),
+        getSpotData({
+          spot: {
+            spotId: spotID,
           },
-        );
-        const test = await response.json();
-        const spotData = JSON.parse(test.spot);
-        setSpotValue({
-          ...spotValue,
-          email: spotData.email,
-          address: spotData.address,
-          spotName: spotData.spotName,
-          intro: spotData.intro,
-          imageList: spotData.imageList,
-          hearted: spotData.hearted,
-          likeCount: spotData.likeCount,
+        }).then((data) => {
+          const spotData = JSON.parse(data.spot);
+          setSpotValue({
+            ...spotValue,
+            email: spotData.email,
+            address: spotData.address,
+            spotName: spotData.spotName,
+            intro: spotData.intro,
+            imageList: spotData.imageList,
+            hearted: spotData.hearted,
+            likeCount: spotData.likeCount,
+          });
         });
       } catch (error) {
-        console.log('error');
+        console.log(error);
       }
     };
 
     const getSpotReview = async () => {
       try {
-        const response = await fetch(
-          'http://49.50.172.178:8080/findPhotoSpot-0.0.1-SNAPSHOT/user/findRecommender',
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              user: {
-                spotId: spotID,
-                email: 'test2@test.com',
-              },
-            }),
+        getSpotReviewData({
+          user: {
+            spotId: spotID,
+            email: 'test2@test.com',
           },
-        );
-        const test = await response.json();
-        const spotReview = JSON.parse(test.user);
-        setSpotReview(spotReview);
+        }).then((data) => {
+          const spotReviewData = JSON.parse(data.user);
+          setSpotReview(spotReviewData);
+        });
       } catch (error) {
-        console.log('error');
+        console.log(error);
       }
     };
+
     getSpotDetail();
     getSpotReview();
   }, [spotID]);
@@ -191,27 +179,19 @@ function SpotDetail({ handleCloseClick, spotID }) {
 
   const handleHeartClick = async () => {
     try {
-      const response = await fetch(
-        'http://49.50.172.178:8080/findPhotoSpot-0.0.1-SNAPSHOT/spotLike/like',
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            spotLike: {
-              spotId: spotID,
-              email: 'test@test.com',
-            },
-          }),
+      heartData({
+        spotLike: {
+          spotId: spotID,
+          email: 'test@test.com',
         },
-      );
-      const test = await response.json();
-      console.log(test);
-      setSpotValue((prev) => ({
-        ...prev,
-        hearted: true,
-        likeCount: test.likeCount,
-      }));
-      // dispatch(FETCH_POST_DATA({ id: postId, token }));
+      }).then((data) => {
+        setSpotValue((prev) => ({
+          ...prev,
+          hearted: true,
+          likeCount: data.likeCount,
+        }));
+        // dispatch(FETCH_POST_DATA({ id: postId, token }));
+      });
     } catch (error) {
       console.log(error);
     }
@@ -219,27 +199,19 @@ function SpotDetail({ handleCloseClick, spotID }) {
 
   const handleUnHeartClick = async () => {
     try {
-      const response = await fetch(
-        'http://49.50.172.178:8080/findPhotoSpot-0.0.1-SNAPSHOT/spotLike/unLike',
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            spotLike: {
-              spotId: spotID,
-              email: 'test@test.com',
-            },
-          }),
+      unheartData({
+        spotLike: {
+          spotId: spotID,
+          email: 'test@test.com',
         },
-      );
-      const test = await response.json();
-      console.log(test);
-      setSpotValue((prev) => ({
-        ...prev,
-        hearted: false,
-        likeCount: test.likeCount,
-      }));
-      // dispatch(FETCH_POST_DATA({ id: postId, token }));
+      }).then((data) => {
+        setSpotValue((prev) => ({
+          ...prev,
+          hearted: false,
+          likeCount: data.likeCount,
+        }));
+        // dispatch(FETCH_POST_DATA({ id: postId, token }));
+      });
     } catch (error) {
       console.log(error);
     }

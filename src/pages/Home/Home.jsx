@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import NavBar from '../../components/common/NavBar/NavBar';
 import SpotDetail from '../../components/Modal/SpotDetail';
 import MarkerIcon from '../../assets/images/logoIcon.png';
+import { getMarker } from '../../api/api';
 
 const Container = styled.div`
   position: absolute;
@@ -56,45 +57,39 @@ function Home() {
     var zoomControl = new kakao.maps.ZoomControl();
     map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
 
-    fetch('http://49.50.172.178:8080/findPhotoSpot-0.0.1-SNAPSHOT/spot/searchAll', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({}),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        const spotData = JSON.parse(data.spot);
+    getMarker({}).then((data) => {
+      const spotData = JSON.parse(data.spot);
 
-        for (let i = 0; i < spotData.length; i++) {
-          // 주소-좌표 변환 객체 생성
-          const geocoder = new kakao.maps.services.Geocoder();
-          const markerSrc = `${MarkerIcon}`, // 마커이미지
-            markerSize = new kakao.maps.Size(38, 30); // 마커이미지 크기
+      for (let i = 0; i < spotData.length; i++) {
+        // 주소-좌표 변환 객체 생성
+        const geocoder = new kakao.maps.services.Geocoder();
+        const markerSrc = `${MarkerIcon}`, // 마커이미지
+          markerSize = new kakao.maps.Size(38, 30); // 마커이미지 크기
 
-          // 주소로 좌표 검색
-          geocoder.addressSearch(spotData[i].address, function (result, status) {
-            // 정상적으로 검색이 완료됐으면
-            if (status === kakao.maps.services.Status.OK) {
-              let coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+        // 주소로 좌표 검색
+        geocoder.addressSearch(spotData[i].address, function (result, status) {
+          // 정상적으로 검색이 완료됐으면
+          if (status === kakao.maps.services.Status.OK) {
+            let coords = new kakao.maps.LatLng(result[0].y, result[0].x);
 
-              // 마커 이미지를 생성
-              const markerImage = new kakao.maps.MarkerImage(markerSrc, markerSize);
-              const marker = new kakao.maps.Marker({
-                map: map, // 마커를 표시할 지도
-                position: coords, // 마커를 표시할 위치
-                title: spotData[i].spotName, // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시
-                image: markerImage,
-              });
+            // 마커 이미지를 생성
+            const markerImage = new kakao.maps.MarkerImage(markerSrc, markerSize);
+            const marker = new kakao.maps.Marker({
+              map: map, // 마커를 표시할 지도
+              position: coords, // 마커를 표시할 위치
+              title: spotData[i].spotName, // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시
+              image: markerImage,
+            });
 
-              // 마커 클릭 시 이벤트
-              kakao.maps.event.addListener(marker, 'click', () =>
-                makeClickListener(spotData[i].spotId),
-              );
-              marker.setMap(map);
-            }
-          });
-        }
-      });
+            // 마커 클릭 시 이벤트
+            kakao.maps.event.addListener(marker, 'click', () =>
+              makeClickListener(spotData[i].spotId),
+            );
+            marker.setMap(map);
+          }
+        });
+      }
+    });
   }, []);
 
   return (

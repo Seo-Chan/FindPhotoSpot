@@ -7,6 +7,7 @@ import PostCode from '../../components/Modal/PostCode';
 import { useSelector, useDispatch } from 'react-redux';
 import { SET_SPOT } from '../../redux/Spot';
 import IconDelete from '../../assets/icon/icon-delete.png';
+import { spotUpload, uploadImgs } from '../../api/api';
 
 const Container = styled.div`
   padding-bottom: 50px;
@@ -30,7 +31,7 @@ const MainContainer = styled.form`
 `;
 
 const UploadBox = styled.div`
-  width: 500px;
+  width: 650px;
   height: 200px;
   line-height: 200px;
   margin-top: 10px;
@@ -165,8 +166,6 @@ const TextArea = styled.textarea`
   font-weight: 400;
 `;
 
-const baseURL = 'http://49.50.172.178:8080/findPhotoSpot-0.0.1-SNAPSHOT';
-
 // base64 -> 이미지 File로 전환
 const dataURLtoFile = (dataUrl, filename) => {
   const arr = dataUrl.split(',');
@@ -246,14 +245,16 @@ function SpotUpdate() {
     for (const image of imageList) {
       formData.append('imageList', dataURLtoFile(image.result, image.filename));
     }
-    const res = await fetch(`${baseURL}/image/uploadfiles`, {
-      method: 'POST',
-      body: formData,
-    });
-    //console.log(response);
-    const test = await res.json();
-    console.log(test.imageFilename); //imageFilename 항목에 등록된 이미지 파일명이 , 로 구분하여 나옴
-    return test.imageFilename;
+    try {
+      let imgFileList = uploadImgs(formData).then((data) => {
+        console.log(data.imageFilename);
+        return data.imageFilename;
+      });
+
+      return imgFileList;
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleOpenClick = () => {
@@ -266,30 +267,22 @@ function SpotUpdate() {
 
   async function submitHandler(e) {
     e.preventDefault();
-    console.log(spot);
     //스토어에 스팟 정보 저장
     dispatch(SET_SPOT(spotValue.intro, spotValue.spotname, spot));
     try {
-      const response = await fetch(
-        'http://49.50.172.178:8080/findPhotoSpot-0.0.1-SNAPSHOT/spot/insertSpot',
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            spot: {
-              address: spot,
-              spotName: spotValue.spotname,
-              intro: spotValue.intro,
-              email: 'test@test.com',
-              imageFilename: await getImageFile(),
-            },
-          }),
+      spotUpload({
+        spot: {
+          address: spot,
+          spotName: spotValue.spotname,
+          intro: spotValue.intro,
+          email: 'test@test.com',
+          imageList: await getImageFile(),
         },
-      );
-      const test = await response.json();
-      alert(test.message);
+      }).then((data) => {
+        alert(data.message);
+      });
     } catch (error) {
-      console.log('error');
+      console.log(error);
     }
   }
 

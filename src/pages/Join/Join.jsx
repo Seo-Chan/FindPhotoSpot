@@ -5,6 +5,7 @@ import CommonButton from '../../components/common/Button/CommonButton';
 import { useDispatch } from 'react-redux';
 // import { useNavigate } from 'react-router-dom';
 import { SET_USER } from '../../redux/User';
+import { emailValid, nicknameValid, joinSubmit } from '../../api/api';
 
 const Container = styled.main`
   background-color: var(--ivory);
@@ -167,50 +168,30 @@ function Join() {
 
   async function getEmailValidate() {
     try {
-      //검증 오류 초기화
-      setEmailError('');
-
       //백엔드 이메일 검증
-      const response = await fetch(
-        'http://49.50.172.178:8080/findPhotoSpot-0.0.1-SNAPSHOT/user/emailvalid',
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            user: {
-              email: joinValue.email,
-            },
-          }),
+      emailValid({
+        user: {
+          email: joinValue.email,
         },
-      );
-      const test = await response.json();
-      alert(test.message);
+      }).then((data) => {
+        alert(data.message);
+      });
     } catch (error) {
-      console.log('error');
+      console.log(error);
     }
   }
   async function getNicknameValidate() {
     try {
-      //검증 오류 초기화
-      setEmailError('');
-
       //백엔드 닉네임 검증
-      const response = await fetch(
-        'http://49.50.172.178:8080/findPhotoSpot-0.0.1-SNAPSHOT/user/nicknamevalid',
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            user: {
-              nickname: joinValue.nickname,
-            },
-          }),
+      nicknameValid({
+        user: {
+          nickname: joinValue.nickname,
         },
-      );
-      const test = await response.json();
-      alert(test.message);
+      }).then((data) => {
+        alert(data.message);
+      });
     } catch (error) {
-      console.log('error');
+      console.log(error);
     }
   }
   async function submitHandler(e) {
@@ -225,28 +206,22 @@ function Join() {
       //스토어에 유저 정보 저장
       dispatch(SET_USER({ email, password, nickname, intro }));
       try {
-        //백엔드 이메일 검증
-        const response = await fetch(
-          'http://49.50.172.178:8080/findPhotoSpot-0.0.1-SNAPSHOT/user',
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              user: {
-                email: email,
-                password: password,
-                nickname: nickname,
-                intro: intro,
-                profile_img: '',
-              },
-            }),
+        //백엔드 닉네임 검증
+        joinSubmit({
+          user: {
+            email: email,
+            password: password,
+            nickname: nickname,
+            intro: intro,
+            profile_img: '',
           },
-        );
-        const test = await response.json();
-        alert(test.message);
+        }).then((data) => {
+          alert(data.message);
+        });
       } catch (error) {
-        console.log('error');
+        console.log(error);
       }
+
       // 다음 페이지로 이동
       // navigate('/');
     }
