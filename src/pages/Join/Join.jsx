@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import Input from '../../components/common/Input/Input';
 import CommonButton from '../../components/common/Button/CommonButton';
 import { useDispatch } from 'react-redux';
 // import { useNavigate } from 'react-router-dom';
 import { SET_USER } from '../../redux/User';
-import { emailValid, nicknameValid, joinSubmit } from '../../api/api';
+import { joinSubmit } from '../../api/api';
+import { useForm } from 'react-hook-form';
+import { emailValid, nicknameValid } from '../../api/api';
 
 const Container = styled.main`
   background-color: var(--ivory);
@@ -48,7 +50,7 @@ const InputFieldset = styled.fieldset`
 
 const InputWrapper = styled.div`
   & + & {
-    margin-top: 20px;
+    margin-top: 12px;
   }
 `;
 
@@ -66,112 +68,42 @@ const ErrorMessage = styled.strong`
   padding: 0 5px;
 `;
 
-const Message = styled.strong`
-  position: absolute;
-  color: ${(props) => (props.isChecked ? 'var(--vividPink)' : '#A4A4A4')};
-  margin-top: 5px;
-  padding: 0 5px;
-`;
-
 function Join() {
   // const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [joinValue, setJoinValue] = useState({
-    email: '',
-    password: '',
-    nickname: '',
-    intro: '',
-    profile: '',
-  });
-  // const [email, setEmail] = useState('');
-  // const [password, setPassword] = useState('');
-  const [passwordCheck, setPasswordCheck] = useState('');
-  // const [nickname, setNickname] = useState('');
-  // const [intro, setIntro] = useState('');
-  // const [isValidatedEmail, setIsValidatedEmail] = useState(false);
-  const [isValidatedPassword, setIsValidatedPassword] = useState(false);
-  const [isValidatedNickname, setIsValidatedNickname] = useState(false);
-  const [isValidatedPasswordCheck, setIsValidatedPasswordCheck] = useState(false);
-  const [emailError, setEmailError] = useState('');
-  const [disable, setDisable] = useState(true);
-
-  useEffect(() => {
-    if (
-      joinValue.email ||
-      joinValue.password ||
-      joinValue.passwordCheck ||
-      joinValue.nickname ||
-      joinValue.intro
-    ) {
-      return setDisable(false);
-    }
-    setDisable(true);
-  }, [joinValue]);
-
-  const isValid = (id, value) => {
-    if (id === 'email') {
-      const regexEmail =
-        /([\w-.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
-      if (!regexEmail.test(value)) {
-        // setIsValidatedEmail(false);
-        setEmailError('✔︎ 이메일 형식이 올바르지 않습니다.');
-      } else {
-        // setIsValidatedEmail(true);
-        setEmailError('');
-      }
-    } else if (id === 'password') {
-      const regexPass = /^(?=.*?[A-Za-z])(?=.*?[0-9])(?=.*?[~?!@#$%^&*_-]).{8,}$/;
-      if (!regexPass.test(value)) {
-        setIsValidatedPassword(false);
-      } else {
-        setIsValidatedPassword(true);
-      }
-    } else if (id === 'nickname') {
-      if (value.length >= 2 && value.length <= 10) {
-        setIsValidatedNickname(true);
-      } else {
-        setIsValidatedNickname(false);
-      }
-    }
+  // const [disable, setDisable] = useState(true);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    getValues,
+  } = useForm();
+  const regex = {
+    email:
+      /([\w-.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/,
+    password: /^(?=.*?[A-Za-z])(?=.*?[0-9])(?=.*?[~?!@#$%^&*_-]).{8,}$/,
   };
 
-  const inputChangeHandler = (e) => {
-    const { id, value } = e.target;
-    setJoinValue({
-      ...joinValue,
-      [id]: value,
-    });
-    isValid(id, value);
-  };
-
-  const passwordCheckValidation = (e) => {
-    const { value } = e.target;
-
-    setPasswordCheck((prev) => value); // eslint-disable-line no-unused-vars
-  };
-
-  useEffect(() => {
-    // PasswordCheck의 길이가 0을 넘어갔을 때부터 실행되게 함
-    // 그렇지 않으면 첫 랜더링때부터 PasswordCheck가 보이게됨.
-    if (passwordCheck.length > 0) {
-      // onChangePasswordCheck에서 나왔으므로 e.target.value로 state를 업데이트할 수 없음
-      // 따라서 다음과 같은 방식으로 state를 업데이트 함
-      setPasswordCheck((currentValue) => currentValue);
-
-      if (joinValue.password === passwordCheck) {
-        setIsValidatedPasswordCheck(true);
-      } else {
-        setIsValidatedPasswordCheck(false);
-      }
-    }
-  }, [passwordCheck]);
+  // useEffect(() => {
+  //   if (
+  //     joinValue.email ||
+  //     joinValue.password ||
+  //     joinValue.passwordCheck ||
+  //     joinValue.nickname ||
+  //     joinValue.intro
+  //   ) {
+  //     return setDisable(false);
+  //   }
+  //   setDisable(true);
+  // }, [joinValue]);
 
   async function getEmailValidate() {
+    const emailValue = getValues('email');
     try {
       //백엔드 이메일 검증
       emailValid({
         user: {
-          email: joinValue.email,
+          email: emailValue,
         },
       }).then((data) => {
         alert(data.message);
@@ -181,11 +113,12 @@ function Join() {
     }
   }
   async function getNicknameValidate() {
+    const nicknameValue = getValues('nickname');
     try {
       //백엔드 닉네임 검증
       nicknameValid({
         user: {
-          nickname: joinValue.nickname,
+          nickname: nicknameValue,
         },
       }).then((data) => {
         alert(data.message);
@@ -202,110 +135,142 @@ function Join() {
       nickname: { value: nickname },
       intro: { value: intro },
     } = e.target;
-    if (!emailError) {
-      //스토어에 유저 정보 저장
-      dispatch(SET_USER({ email, password, nickname, intro }));
-      try {
-        //백엔드 닉네임 검증
-        joinSubmit({
-          user: {
-            email: email,
-            password: password,
-            nickname: nickname,
-            intro: intro,
-            profile_img: '',
-          },
-        }).then((data) => {
-          alert(data.message);
-        });
-      } catch (error) {
-        console.log(error);
-      }
-
-      // 다음 페이지로 이동
-      // navigate('/');
+    // if (!emailError) {
+    //스토어에 유저 정보 저장
+    dispatch(SET_USER({ email, password, nickname, intro }));
+    try {
+      //백엔드 닉네임 검증
+      joinSubmit({
+        user: {
+          email: email,
+          password: password,
+          nickname: nickname,
+          intro: intro,
+          profile_img: '',
+        },
+      }).then((data) => {
+        alert(data.message);
+      });
+    } catch (error) {
+      console.log(error);
     }
+
+    // 다음 페이지로 이동
+    // navigate('/');
+    // }
   }
 
   return (
     <Container>
       <Title>회원가입</Title>
-      <JoinForm onSubmit={submitHandler}>
+      <JoinForm onSubmit={handleSubmit(submitHandler)}>
         <InputFieldset>
           <InputWrapper>
             <ValidationWrapper>
               <Input
                 id='email'
+                type='text'
                 labelText='이메일'
                 placeholder='이메일을 입력해주세요'
-                onChange={inputChangeHandler}
-                required={true}
+                register={register('email', {
+                  required: '이메일은 필수 입력입니다.',
+                  pattern: {
+                    value: regex.email,
+                    message: '✔︎ 이메일 형식이 올바르지 않습니다.',
+                  },
+                })}
               />
               <CommonButton
                 size='sm'
                 fontColor='black'
                 txt='확인'
                 bgColor='light'
-                disabled={disable}
+                // disabled={disable}
                 onClick={getEmailValidate}
                 type='button'
               />
             </ValidationWrapper>
-            <ErrorMessage>{emailError}</ErrorMessage>
+            <ErrorMessage>{errors?.email?.message}</ErrorMessage>
           </InputWrapper>
           <InputWrapper>
             <Input
-              type='password'
               id='password'
+              type='password'
               labelText='비밀번호'
-              placeholder='비밀번호를 입력해주세요'
-              onChange={inputChangeHandler}
-              required={true}
+              placeholder='대소문자, 숫자, 특수문자 포함 8자 이상으로 입력해주세요'
+              register={register('password', {
+                required: '비밀번호는 필수 입력입니다.',
+                minLength: {
+                  value: 8,
+                  message: '✔︎ 대소문자, 숫자, 특수문자 포함 8자 이상',
+                },
+                pattern: {
+                  value: regex.password,
+                  message: '✔︎ 대소문자, 숫자, 특수문자 포함 8자 이상',
+                },
+              })}
             />
-            <Message isChecked={isValidatedPassword}>
-              ✔︎ 대소문자, 숫자, 특수문자 포함 8자 이상
-            </Message>
+            <ErrorMessage>{errors?.password?.message}</ErrorMessage>
           </InputWrapper>
           <InputWrapper>
             <Input
               type='password'
               id='passwordCheck'
               labelText='비밀번호 확인'
-              placeholder='비밀번호를 입력해주세요'
-              onChange={passwordCheckValidation}
-              required={true}
+              placeholder='대소문자, 숫자, 특수문자 포함 8자 이상으로 입력해주세요'
+              // onChange={passwordCheckValidation}
+              register={register('passwordCheck', {
+                required: '비밀번호는 필수 입력입니다.',
+                validate: {
+                  check: (val) => {
+                    const { password } = getValues();
+                    return password === val || '비밀번호가 일치하지 않습니다.';
+                  },
+                },
+              })}
             />
-            <Message isChecked={isValidatedPasswordCheck}>✔︎ 비밀번호 일치</Message>
+            <ErrorMessage>{errors?.passwordCheck?.message}</ErrorMessage>
           </InputWrapper>
           <InputWrapper>
             <ValidationWrapper>
               <Input
                 id='nickname'
                 labelText='닉네임'
-                placeholder='닉네임을 입력해주세요'
-                onChange={inputChangeHandler}
-                required={true}
+                placeholder='2~10자 이내로 입력해주세요'
+                register={register('nickname', {
+                  required: '닉네임은 필수 입력입니다.',
+                  minLength: {
+                    value: 2,
+                    message: '✔︎ 2~10자 이내',
+                  },
+                  maxLength: {
+                    value: 10,
+                    message: '✔︎ 2~10자 이내',
+                  },
+                })}
               />
               <CommonButton
                 size='sm'
                 fontColor='black'
                 txt='확인'
                 bgColor='light'
-                disabled={disable}
+                // disabled={disable}
                 onClick={getNicknameValidate}
                 type='button'
               />
             </ValidationWrapper>
-            <Message isChecked={isValidatedNickname}>✔︎ 2~10자 이내</Message>
+            <ErrorMessage>{errors?.nickname?.message}</ErrorMessage>
           </InputWrapper>
           <InputWrapper>
             <Input
               id='intro'
               labelText='자기소개'
               placeholder='자기소개를 입력해주세요'
-              onChange={inputChangeHandler}
-              required={true}
+              register={register('intro', {
+                required: '자기소개는 필수 입력입니다.',
+              })}
             />
+            <ErrorMessage>{errors?.intro?.message}</ErrorMessage>
           </InputWrapper>
         </InputFieldset>
         <CommonButton
@@ -313,7 +278,7 @@ function Join() {
           fontColor='black'
           txt='시작하기'
           bgColor='light'
-          disabled={disable}
+          // disabled={disable}
         />
       </JoinForm>
     </Container>
