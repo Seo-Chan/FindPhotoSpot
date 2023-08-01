@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Input from '../../components/common/Input/Input';
 import CommonButton from '../../components/common/Button/CommonButton';
@@ -71,14 +71,16 @@ const ErrorMessage = styled.strong`
 function Join() {
   // const navigate = useNavigate();
   const dispatch = useDispatch();
-  // const [disable, setDisable] = useState(true);
+  const [disable, setDisable] = useState(true);
   const {
     register,
     handleSubmit,
     formState: { errors },
     getValues,
     setFocus,
+    watch,
   } = useForm();
+  const inputData = watch();
 
   const regex = {
     email:
@@ -89,6 +91,14 @@ function Join() {
   useEffect(() => {
     setFocus('email');
   }, [setFocus]);
+
+  useEffect(() => {
+    const { email, password, passwordCheck, nickname, intro } = inputData;
+    if (email && password && passwordCheck && nickname && intro) {
+      return setDisable(false);
+    }
+    setDisable(true);
+  }, [inputData]);
 
   // useEffect(() => {
   //   if (
@@ -133,28 +143,29 @@ function Join() {
       console.log(error);
     }
   }
-  async function submitHandler(e) {
-    e.preventDefault();
-    const {
-      email: { value: email },
-      password: { value: password },
-      nickname: { value: nickname },
-      intro: { value: intro },
-    } = e.target;
-    // if (!emailError) {
+  async function submitHandler({ email, password, nickname, intro }) {
+    const inputData = {
+      user: {
+        email,
+        password,
+        nickname,
+        intro,
+        profile_img: '',
+      },
+    };
     //스토어에 유저 정보 저장
-    dispatch(SET_USER({ email, password, nickname, intro }));
+    dispatch(
+      SET_USER({
+        email,
+        password,
+        nickname,
+        intro,
+      }),
+    );
+
+    //회원가입 정보 저장
     try {
-      //백엔드 닉네임 검증
-      joinSubmit({
-        user: {
-          email: email,
-          password: password,
-          nickname: nickname,
-          intro: intro,
-          profile_img: '',
-        },
-      }).then((data) => {
+      joinSubmit(inputData).then((data) => {
         alert(data.message);
       });
     } catch (error) {
@@ -281,10 +292,9 @@ function Join() {
         </InputFieldset>
         <CommonButton
           size='lg'
-          fontColor='black'
+          fontColor={disable ? 'black' : 'white'}
           txt='시작하기'
-          bgColor='light'
-          // disabled={disable}
+          bgColor={disable ? 'light' : 'vivid'}
         />
       </JoinForm>
     </Container>
