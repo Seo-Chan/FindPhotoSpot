@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import Input from '../../components/common/Input/Input';
 import CommonButton from '../../components/common/Button/CommonButton';
@@ -77,12 +77,18 @@ function Join() {
     handleSubmit,
     formState: { errors },
     getValues,
+    setFocus,
   } = useForm();
+
   const regex = {
     email:
       /([\w-.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/,
     password: /^(?=.*?[A-Za-z])(?=.*?[0-9])(?=.*?[~?!@#$%^&*_-]).{8,}$/,
   };
+
+  useEffect(() => {
+    setFocus('email');
+  }, [setFocus]);
 
   // useEffect(() => {
   //   if (
