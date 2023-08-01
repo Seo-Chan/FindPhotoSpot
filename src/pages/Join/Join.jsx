@@ -100,47 +100,38 @@ function Join() {
     setDisable(true);
   }, [inputData]);
 
-  // useEffect(() => {
-  //   if (
-  //     joinValue.email ||
-  //     joinValue.password ||
-  //     joinValue.passwordCheck ||
-  //     joinValue.nickname ||
-  //     joinValue.intro
-  //   ) {
-  //     return setDisable(false);
-  //   }
-  //   setDisable(true);
-  // }, [joinValue]);
-
   async function getEmailValidate() {
     const emailValue = getValues('email');
-    try {
-      //백엔드 이메일 검증
-      emailValid({
-        user: {
-          email: emailValue,
-        },
-      }).then((data) => {
-        alert(data.message);
-      });
-    } catch (error) {
-      console.log(error);
+    if (emailValue) {
+      try {
+        //백엔드 이메일 검증
+        emailValid({
+          user: {
+            email: emailValue,
+          },
+        }).then((data) => {
+          alert(data.message);
+        });
+      } catch (error) {
+        console.log(error);
+      }
     }
   }
   async function getNicknameValidate() {
     const nicknameValue = getValues('nickname');
-    try {
-      //백엔드 닉네임 검증
-      nicknameValid({
-        user: {
-          nickname: nicknameValue,
-        },
-      }).then((data) => {
-        alert(data.message);
-      });
-    } catch (error) {
-      console.log(error);
+    if (nicknameValue) {
+      try {
+        //백엔드 닉네임 검증
+        nicknameValid({
+          user: {
+            nickname: nicknameValue,
+          },
+        }).then((data) => {
+          alert(data.message);
+        });
+      } catch (error) {
+        console.log(error);
+      }
     }
   }
   async function submitHandler({ email, password, nickname, intro }) {
