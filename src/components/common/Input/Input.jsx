@@ -27,11 +27,11 @@ const InputText = styled.input`
   font-weight: 400;
 `;
 
-function Input({ type = 'text', ...props }) {
+function Input({ register, ...props }) {
   return (
     <InputContainer>
-      <InputLabel htmlFor={props.id}>{props.labelText}</InputLabel>
-      <InputText type={type} {...props} />
+      <InputLabel htmlFor={register?.name || props.id}>{props.labelText}</InputLabel>
+      <InputText {...props} {...register} />
     </InputContainer>
   );
 }
