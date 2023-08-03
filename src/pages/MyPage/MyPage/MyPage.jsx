@@ -4,6 +4,7 @@ import NavBar from '../../../components/common/NavBar/NavBar';
 import UploadProfileImg from '../../../assets/images/uploadProfileImg.png';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import SpotList from '../../../components/spot/SpotList';
 
 const Container = styled.div`
   position: absolute;
@@ -53,56 +54,6 @@ const SpotPostContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
-`;
-
-const SpotList = styled.ul`
-  width: 40vw;
-  height: 200px;
-  padding: 15px 20px;
-  background-color: var(--lightPink);
-  border-radius: 15px;
-  overflow: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-`;
-
-const SpotListContainer = styled.div``;
-
-const SpotContainer = styled.li`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 15px;
-  padding-bottom: 4px;
-  border-bottom: 1px solid #ffffff;
-  img {
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
-    object-fit: cover;
-  }
-`;
-
-const SpotInfo = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-`;
-
-const SpotName = styled.p`
-  font-size: 1.5rem;
-`;
-
-const SpotAddress = styled.p`
-  font-size: 1.1rem;
-`;
-
-const SpotPost = styled.h3`
-  width: 35vw;
-  font-size: 1.5rem;
-  font-weight: 600;
-  padding: 8px;
 `;
 
 const Nickname = styled.p`
@@ -172,44 +123,8 @@ function MyPage() {
           </Link>
         </UserProfile>
         <SpotPostContainer>
-          <SpotListContainer>
-            <SpotPost>좋아요 누른 스팟</SpotPost>
-            <SpotList>
-              {!!regSpotList.length &&
-                regSpotList.map((spot, index) => (
-                  <SpotContainer key={index}>
-                    <img
-                      src={`http://49.50.172.178:8080/findPhotoSpot-0.0.1-SNAPSHOT/image/${
-                        spot.imageList.split(',')[0]
-                      }`}
-                    />
-                    <SpotInfo>
-                      <SpotName>{spot.spotName}</SpotName>
-                      <SpotAddress>{spot.address}</SpotAddress>
-                    </SpotInfo>
-                  </SpotContainer>
-                ))}
-            </SpotList>
-          </SpotListContainer>
-          <SpotListContainer>
-            <SpotPost>추천한 스팟</SpotPost>
-            <SpotList>
-              {!!likedSpotList.length &&
-                likedSpotList.map((spot, index) => (
-                  <SpotContainer key={index}>
-                    <img
-                      src={`http://49.50.172.178:8080/findPhotoSpot-0.0.1-SNAPSHOT/image/${
-                        spot.imageList.split(',')[0]
-                      }`}
-                    />
-                    <SpotInfo>
-                      <SpotName>{spot.spotName}</SpotName>
-                      <SpotAddress>{spot.address}</SpotAddress>
-                    </SpotInfo>
-                  </SpotContainer>
-                ))}
-            </SpotList>
-          </SpotListContainer>
+          <SpotList title='좋아요 누른 스팟' spotList={likedSpotList} />
+          <SpotList title='내가 추천한 스팟' spotList={regSpotList} />
         </SpotPostContainer>
       </ProfileContainer>
     </Container>
