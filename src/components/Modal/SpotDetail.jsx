@@ -61,7 +61,7 @@ const UserList = styled.ul`
 
 const UserName = styled.p`
   font-weight: 600;
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   color: black;
 `;
 
@@ -73,8 +73,8 @@ const SpotReview = styled.li`
   padding-bottom: 4px;
   border-bottom: 1px solid #ffffff;
   img {
-    width: 50px;
-    height: 50px;
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
     object-fit: cover;
   }
@@ -136,16 +136,19 @@ function SpotDetail({ handleCloseClick, spotID }) {
             spotId: spotID,
           },
         }).then((data) => {
-          const spotData = JSON.parse(data.spot);
+          // const spotData = JSON.parse(data.spot);
+          const { email, address, spotName, intro, imageList, hearted, likeCount } = JSON.parse(
+            data.spot,
+          );
           setSpotValue({
             ...spotValue,
-            email: spotData.email,
-            address: spotData.address,
-            spotName: spotData.spotName,
-            intro: spotData.intro,
-            imageList: spotData.imageList,
-            hearted: spotData.hearted,
-            likeCount: spotData.likeCount,
+            email,
+            address,
+            spotName,
+            intro,
+            imageList,
+            hearted,
+            likeCount,
           });
         });
       } catch (error) {
