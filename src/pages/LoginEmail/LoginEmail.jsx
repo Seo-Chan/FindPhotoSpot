@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import Input from '../../components/common/Input/Input';
-import Button from '../../components/common/Button/Button';
+import CommonButton from '../../components/common/Button/CommonButton';
 
 const Container = styled.main`
   background-color: var(--ivory);
@@ -51,15 +51,21 @@ function LoginEmail() {
       <Title>로그인</Title>
       <LoginForm>
         <InputFieldset>
-          <Input id='email' labelText='이메일' placeholder='이메일을 입력해주세요' />
+          <Input
+            id='email'
+            labelText='이메일'
+            placeholder='이메일을 입력해주세요'
+            required={true}
+          />
           <Input
             type='password'
             id='password'
             labelText='비밀번호'
             placeholder='비밀번호를 입력해주세요'
+            required={true}
           />
         </InputFieldset>
-        <Button size='lg' fontColor='black' txt='확인' bgColor='light' />
+        <CommonButton size='lg' fontColor='black' txt='확인' />
       </LoginForm>
       <Link to='/join'>이메일로 회원가입</Link>
     </Container>
