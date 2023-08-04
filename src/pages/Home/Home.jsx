@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import NavBar from '../../components/common/NavBar/NavBar';
-import SpotDetail from '../../components/Modal/SpotDetail';
+import SpotDetail from '../../components/modal/SpotDetail';
 import MarkerIcon from '../../assets/images/logoIcon.png';
 import { getMarker } from '../../api/api';
 

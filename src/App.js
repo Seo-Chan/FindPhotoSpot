@@ -8,7 +8,7 @@ import Join from './pages/Join/Join';
 import Home from './pages/Home/Home';
 import SpotUpdate from './pages/SpotUpdate/SpotUpdate';
 import MyPage from './pages/MyPage/MyPage/MyPage';
-import Modal from './components/Modal/SpotDetail';
+import Modal from './components/modal/SpotDetail';
 import EditProfile from './pages/MyPage/EditProfile/EditProfile';
 
 const GlobalStyled = createGlobalStyle`

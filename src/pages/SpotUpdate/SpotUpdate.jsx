@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import NavBar from '../../components/common/NavBar/NavBar';
 import UploadImg from '../../assets/images/uploadImg.png';
 import CommonButton from '../../components/common/Button/CommonButton';
-import PostCode from '../../components/Modal/PostCode';
+import PostCode from '../../components/modal/PostCode';
 import { useSelector, useDispatch } from 'react-redux';
 import { SET_SPOT } from '../../redux/Spot';
 import IconDelete from '../../assets/icon/icon-delete.png';
