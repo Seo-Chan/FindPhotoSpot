@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const baseURL = 'https://49.50.172.178:8080/findPhotoSpot-0.0.1-SNAPSHOT';
+const baseURL = 'https://49.50.172.178:8443/findPhotoSpot-0.0.1-SNAPSHOT';
 
 const authInstance = axios.create({
   baseURL,
