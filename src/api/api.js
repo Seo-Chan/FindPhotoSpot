@@ -43,6 +43,15 @@ export const joinSubmit = async (formData) => {
   }
 };
 
+export const userLogin = async (formData) => {
+  try {
+    const response = await authInstance.post('/user/login', formData);
+    return response.data;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
 export const getMarker = async (formData) => {
   try {
     const response = await authInstance.post('/spot/searchAll', formData);
